@@ -1,0 +1,604 @@
+* Geyser
+一个受[[https://github.com/BlackGlory/mq][mq]]启发的Web友好的自托管ad-hoc微服务,
+提供基于 HTTP 的阻塞式速率限制器,
+带有基于token和名单的访问控制策略,
+支持JSON Schema.
+
+基于HTTP的阻塞方式类似于长轮询(long polling):
+直到令牌获取成功, 服务器才会返回响应.
+
+受原理所限, 此服务不能实现消息的可靠传递(reliable delivery), 也无法重发消息.
+因此当遭遇网络故障时, 消息可能会丢失.
+
+所有URL都采用了反射性的CORS, 不提供针对 =Origin= 的访问控制策略.
+
+** Quickstart
+#+BEGIN_SRC sh
+docker run --detach --publish 8080:8080 blackglory/geyser
+
+curl http://localhost:8080/geyser/hello-world
+#+END_SRC
+
+** Install
+*** 从源代码运行
+可以使用环境变量 =GEYSER_HOST= 和 =GEYSER_PORT= 决定服务器监听的地址和端口, 默认值为localhost和8080.
+
+#+BEGIN_SRC sh
+git clone https://github.com/BlackGlory/geyser
+cd geyser
+yarn install
+yarn build
+yarn --silent start
+#+END_SRC
+
+*** Docker
+#+BEGIN_SRC sh
+docker run \
+  --detach \
+  --publish 8080:8080 \
+  blackglory/geyser
+#+END_SRC
+
+**** 从源代码构建
+#+BEGIN_SRC sh
+git clone https://github.com/BlackGlory/geyser
+cd geyser
+yarn install
+yarn docker:build
+#+END_SRC
+
+**** Recipes
+***** 公开服务器
+****** docker-compose.yml
+#+BEGIN_SRC yaml
+version: '3.8'
+
+services:
+  geyser:
+    image: 'blackglory/geyser'
+    restart: always
+    volumes:
+      - 'geyser-data:/data'
+    ports:
+      - '8080:8080'
+
+volumes:
+  geyser-data:
+#+END_SRC
+
+***** 私人服务器
+****** docker-compose.yml
+#+BEGIN_SRC yaml
+version: '3.8'
+
+services:
+  geyser:
+    image: 'blackglory/geyser'
+    restart: always
+    environment:
+      - GEYSER_ADMIN_PASSWORD=password
+      - GEYSER_TOKEN_BASED_ACCESS_CONTROL=true
+      - GEYSER_ACQUIRE_TOKEN_REQUIRED=true
+    volumes:
+      - 'geyser-data:/data'
+    ports:
+      - '8080:8080'
+
+volumes:
+  geyser-data:
+#+END_SRC
+
+** API
+所有API中的id都需要满足此正则表达式: =^[a-zA-Z0-9\.\-_]{0,255}$=
+
+*** Public
+**** acquire
+=GET /geyser/<id>=
+
+从特定限速器申请令牌, 如果限速器没有可用令牌, 则阻塞直到有新令牌.
+id用于标识限速器.
+
+该项目中的令牌是一种类似锁的抽象概念, 与令牌桶(token bucket)无关.
+内部使用的算法类似于漏桶(leaky bucket), 但桶中的水量是无限的.
+
+如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
+=GET /geyser/<id>?token=<token>=
+
+当一个限速器未配置duration和limit时, acquire操作是无法进行的, 此时将会返回503.
+
+***** Example
+****** curl
+#+BEGIN_SRC sh
+curl "http://localhost:8080/geyser/$id"
+#+END_SRC
+
+****** JavaScript
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/geyser/${id}`)
+#+END_SRC
+
+*** Private
+**** 配置(configurations)
+#+BEGIN_SRC ts
+{
+  duration: number | null // 以秒为单位的时间周期, 由第一枚令牌分发时开始计算, 在指定秒数后进入下一周期, null表示继承全局值
+  limit: number | null // 在周期内允许分发的令牌数量, null表示继承全局值
+}
+#+END_SRC
+
+可用以下环境变量作为全局设置:
+=GEYSER_DURATION=, 没有默认值.
+=GEYSER_LIMIT=, 没有默认值.
+
+***** 获取所有具有配置的geyser id
+=GET /admin/geyser-with-configurations=
+
+返回由JSON表示的字符串数组 =string[]=.
+
+****** Example
+******* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser-with-configurations"
+#+END_SRC
+
+******* fetch
+#+BEGIN_SRC js
+await fetch('http://localhost:8080/admin/geyser-with-configurations', {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+***** 获取特定限速器的配置
+=GET /admin/geyser/<id>/configurations=
+
+返回JSON:
+#+BEGIN_SRC ts
+{
+  duration: number | null
+  limit: number | null
+}
+#+END_SRC
+
+****** Example
+******* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/configurations"
+#+END_SRC
+
+******* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/configurations`, {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+***** 设置配置
+=PUT /admin/geyser/<geyser-id>/configurations/duration=
+=PUT /admin/geyser/<geyser-id>/configurations/limit=
+
+Payload必须为对应的null以外的JSON值.
+
+****** Example
+******* curl
+#+BEGIN_SRC sh
+curl \
+  --request PUT \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  --header "Content-Type: application/json" \
+  --data "$DURATION" \
+  "http://localhost:8080/admin/geyser/$id/configurations/duration"
+#+END_SRC
+
+******* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, {
+  method: 'PUT'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  , 'Content-Type': 'application/json'
+  }
+, body: JSON.stringify(unique)
+})
+#+END_SRC
+
+***** 移除配置
+=DELETE /admin/geyser/<geyser-id>/configurations/duration=
+=DELETE /admin/geyser/<geyser-id>/configurations/limit=
+
+****** Example
+******* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELETE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/configurations/duration"
+#+END_SRC
+
+******* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, {
+  method: 'DELETE'
+})
+#+END_SRC
+
+
+**** 访问控制
+GEYSER提供两种可以同时启用的访问控制策略.
+
+所有访问控制API都使用基于口令的Bearer Token Authentication.
+口令需通过环境变量 =GEYSER_ADMIN_PASSWORD= 进行设置.
+
+访问控制规则是通过[[https://www.sqlite.org/wal.html][WAL模式]]的SQLite3持久化的, 开启访问控制后,
+服务器的吞吐量和响应速度会受到硬盘性能的影响.
+
+已经打开的连接不会受到新的访问控制规则的影响.
+
+***** 基于名单的访问控制
+通过设置环境变量 =GEYSER_LIST_BASED_ACCESS_CONTROL= 开启基于名单的访问控制:
+- =whitelist=
+  启用基于限制器白名单的访问控制, 只有在名单内的限制器允许被访问.
+- =blacklist=
+  启用基于限制器黑名单的访问控制, 只有在名单外的限制器允许被访问.
+
+****** 黑名单
+******* 获取黑名单
+=GET /admin/blacklist=
+
+获取位于黑名单中的所有限制器id, 返回JSON表示的字符串数组 =string[]=.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/blacklist"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch('http://localhost:8080/admin/blacklist', {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+******* 添加黑名单
+=PUT /admin/blacklist/<id>=
+
+将特定限制器加入黑名单.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request PUT \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/blacklist/$id"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+  method: 'PUT'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+******* 移除黑名单
+=DELETE /admin/blacklist/<id>=
+
+将特定限制器从黑名单中移除.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELEjTE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/blacklist/$id"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+  method: 'DELETE'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+****** 白名单
+******* 获取白名单
+=GET /admin/whitelist=
+
+获取位于黑名单中的所有限制器id, 返回JSON表示的字符串数组 =string[]=.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIM_PASSWORD" \
+  "http://localhost:8080/admin/whitelist"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch('http://localhost:8080/admin/whitelist', {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+******* 添加白名单
+=PUT /admin/whitelist/<id>=
+
+将特定限制器加入白名单.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request PUT \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/whitelist/$id"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+  method: 'PUT'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+******* 移除白名单
+=DELETE /admin/whitelist/<id>=
+
+将特定限制器从白名单中移除.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELETE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/whitelist/$id"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+  method: 'DELETE'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+***** 基于token的访问控制
+对token的要求: =^[a-zA-Z0-9\.\-_]{1,256}$=
+
+通过设置环境变量 =GEYSER_TOKEN_BASED_ACCESS_CONTROL=true= 开启基于token的访问控制.
+
+基于token的访问控制将根据限制器的token access policy决定其访问规则.
+可通过环境变量 =GEYSER_ACQUIRE_TOKEN_REQUIRED= 设置相关默认值,
+未设置情况下为 =false=.
+
+一个限制器可以有多个token, 每个token可以单独设置acquire和read权限, 不同限制器的token不共用.
+
+基于token的访问控制作出以下假设
+- token的传输过程是安全的
+- token难以被猜测
+- token的意外泄露可以被迅速处理
+
+****** token策略
+******* 获取所有具有token策略的限制器id
+=GET /admin/geyser-with-token-policies=
+
+获取所有具有token策略的限制器id, 返回由JSON表示的字符串数组 =string[]=.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser-with-token-policies"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch('http://localhost:8080/admin/geyser-with-token-policies')
+#+END_SRC
+
+******* 获取特定限制器的token策略
+=GET /admin/geyser/<id>/token-policies=
+
+返回JSON:
+#+BEGIN_SRC ts
+{
+  acquireTokenRequired: boolean | null
+}
+#+END_SRC
+=null= 代表沿用相关默认值.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/token-policies"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fethc(`http://localhost:8080/admin/geyser/${id}/token-policies`, {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+******* 设置token策略
+=PUT /admin/geyser/<id>/token-policies/acquire-token-required=
+
+Payload必须是一个布尔值.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request PUT \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  --header "Content-Type: application/json" \
+  --data "$WRITE_TOKEN_REQUIRED" \
+  "http://localhost:8080/admin/geyser/$id/token-policies/acquire-token-required"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-token-required`, {
+  method: 'PUT'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  , 'Content-Type': 'application/json'
+  }
+, body: JSON.stringify(acquireTokenRequired)
+})
+#+END_SRC
+
+******* 移除token策略
+=DELETE /admin/geyser/<id>/token-policies/acquire-token-required=
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELETE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/token-policies/acquire-token-required"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-token-required`, {
+  method: 'DELETE'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+****** token
+******* 获取所有具有token的限制器id
+=GET /admin/geyser-with-tokens=
+
+获取所有具有token的限制器id, 返回由JSON表示的字符串数组 =string[]=.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser-with-tokens"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser-with-tokens`, {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+******* 获取特定限制器的所有token
+=GET /admin/geyser/<id>/tokens=
+
+获取特定限制器的所有token, 返回JSON数组表示的token及其权限
+=Array<{ token: string, acquire: boolean }>=.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/tokens"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/tokens`, {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+}).then(res => res.json())
+#+END_SRC
+
+******* 为特定限制器的token设置acquire权限
+=PUT /admin/geyser/<id>/tokens/<token>/acquire=
+
+添加/更新token, 为token设置acquire权限.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request PUT \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/tokens/$token/acquire"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, {
+  method: 'PUT'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+******* 取消特定限制器的token的acquire权限
+=DELETE /admin/geyser/<id>/tokens/<token>/acquire=
+
+取消token的acquire权限.
+
+******** Example
+********* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELETE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$id/tokens/$token/acquire"
+#+END_SRC
+
+********* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, {
+  method: 'DELETE'
+, headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+})
+#+END_SRC
+
+** HTTP/2
+GEYSER支持HTTP/2, 以多路复用反向代理时的连接, 可通过设置环境变量 =GEYSER_HTTP2=true= 开启.
+
+此HTTP/2支持不提供从HTTP/1.1自动升级的功能, 亦不提供HTTPS.
+因此, 在本地curl里进行测试时, 需要开启 =--http2-prior-knowledge= 选项.
