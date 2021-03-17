@@ -12,14 +12,14 @@ beforeEach(startService)
 afterEach(stopService)
 
 describe('Configuration', () => {
-  describe('GET /admin/geyser-with-configurations', () => {
+  describe('GET /admin/geyser-with-config', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/admin/geyser-with-configurations')
+        , pathname('/admin/geyser-with-config')
         , headers(createAuthHeaders())
         ))
 
@@ -35,7 +35,7 @@ describe('Configuration', () => {
       it('401', async () => {
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/admin/geyser-with-configurations')
+        , pathname('/admin/geyser-with-config')
         ))
 
         expect(res.status).toBe(401)
@@ -48,7 +48,7 @@ describe('Configuration', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname('/admin/geyser-with-configurations')
+        , pathname('/admin/geyser-with-config')
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -57,7 +57,7 @@ describe('Configuration', () => {
     })
   })
 
-  describe('GET /admin/geyser/:id/configurations', () => {
+  describe('GET /admin/geyser/:id/config', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
@@ -65,7 +65,7 @@ describe('Configuration', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations`)
+        , pathname(`/admin/geyser/${id}/config`)
         , headers(createAuthHeaders())
         ))
 
@@ -96,7 +96,7 @@ describe('Configuration', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations`)
+        , pathname(`/admin/geyser/${id}/config`)
         ))
 
         expect(res.status).toBe(401)
@@ -110,7 +110,7 @@ describe('Configuration', () => {
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations`)
+        , pathname(`/admin/geyser/${id}/config`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -119,7 +119,7 @@ describe('Configuration', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/configurations/duration', () => {
+  describe('PUT /admin/geyser/:id/config/duration', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
@@ -128,7 +128,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -144,7 +144,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         , json(val)
         ))
 
@@ -160,7 +160,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -170,7 +170,7 @@ describe('Configuration', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/configurations/duration', () => {
+  describe('DELETE /admin/geyser/:id/config/duration', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
@@ -178,7 +178,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         , headers(createAuthHeaders())
         ))
 
@@ -192,7 +192,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         ))
 
         expect(res.status).toBe(401)
@@ -206,7 +206,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/duration`)
+        , pathname(`/admin/geyser/${id}/config/duration`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -215,7 +215,7 @@ describe('Configuration', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/configurations/limit', () => {
+  describe('PUT /admin/geyser/:id/config/limit', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
@@ -224,7 +224,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -240,7 +240,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         , json(val)
         ))
 
@@ -256,7 +256,7 @@ describe('Configuration', () => {
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -266,7 +266,7 @@ describe('Configuration', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/configurations/limit', () => {
+  describe('DELETE /admin/geyser/:id/config/limit', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
@@ -274,7 +274,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         , headers(createAuthHeaders())
         ))
 
@@ -288,7 +288,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         ))
 
         expect(res.status).toBe(401)
@@ -302,7 +302,7 @@ describe('Configuration', () => {
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/configurations/limit`)
+        , pathname(`/admin/geyser/${id}/config/limit`)
         , headers(createAuthHeaders('bad'))
         ))
 

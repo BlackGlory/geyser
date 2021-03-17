@@ -1,5 +1,6 @@
 import { ValueGetter } from 'value-getter'
-import { Getter, isNumber } from '@blackglory/types'
+import { isNumber } from '@blackglory/types'
+import { Getter } from 'hotypes'
 import { getCache } from '@env/cache'
 import { path as appRoot } from 'app-root-path'
 import * as path from 'path'
@@ -92,15 +93,17 @@ export const ACQUIRE_TOKEN_REQUIRED: Getter<boolean> =
     .memoize(getCache)
     .get()
 
-export const DURATION: Getter<number | undefined> =
+export const DURATION: Getter<number> =
   env('GEYSER_DURATION')
     .convert(toInteger)
+    .default(Infinity)
     .memoize(getCache)
     .get()
 
-export const LIMIT: Getter<number | undefined> =
+export const LIMIT: Getter<number> =
   env('GEYSER_LIMIT')
     .convert(toInteger)
+    .default(0)
     .memoize(getCache)
     .get()
 

@@ -1,6 +1,6 @@
 import { getDatabase } from '../database'
 
-export function getAllIdsWithConfigurations(): string[] {
+export function getAllIdsWithConfiguration(): string[] {
   const result = getDatabase().prepare(`
     SELECT geyser_id
       FROM geyser_configuration;
@@ -8,7 +8,7 @@ export function getAllIdsWithConfigurations(): string[] {
   return result.map(x => x['geyser_id'])
 }
 
-export function getConfigurations(id: string): Configurations {
+export function getConfiguration(id: string): IConfiguration {
   const row: {
     'duration': number | null
     'limit': number | null

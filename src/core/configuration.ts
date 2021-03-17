@@ -1,25 +1,30 @@
 import { ConfigurationDAO } from '@dao/config-in-sqlite3/configuration'
+import { updateConfig } from './geyser'
 
 export function getAllIds(): Promise<string[]> {
-  return ConfigurationDAO.getAllIdsWithConfigurations()
+  return ConfigurationDAO.getAllIdsWithConfiguration()
 }
 
-export function get(geyserId: string): Promise<Configurations> {
-  return ConfigurationDAO.getConfigurations(geyserId)
+export function get(id: string): Promise<IConfiguration> {
+  return ConfigurationDAO.getConfiguration(id)
 }
 
-export function setDuration(geyserId: string, val: number): Promise<void> {
-  return ConfigurationDAO.setDuration(geyserId, val)
+export async function setDuration(id: string, val: number): Promise<void> {
+  await ConfigurationDAO.setDuration(id, val)
+  await updateConfig(id)
 }
 
-export function unsetDuration(geyserId: string): Promise<void> {
-  return ConfigurationDAO.unsetDuration(geyserId)
+export async function unsetDuration(id: string): Promise<void> {
+  await ConfigurationDAO.unsetDuration(id)
+  await updateConfig(id)
 }
 
-export function setLimit(geyserId: string, val: number): Promise<void> {
-  return ConfigurationDAO.setLimit(geyserId, val)
+export async function setLimit(id: string, val: number): Promise<void> {
+  await ConfigurationDAO.setLimit(id, val)
+  await updateConfig(id)
 }
 
-export function unsetLimit(geyserId: string): Promise<void> {
-  return ConfigurationDAO.unsetLimit(geyserId)
+export async function unsetLimit(id: string): Promise<void> {
+  await ConfigurationDAO.unsetLimit(id)
+  await updateConfig(id)
 }

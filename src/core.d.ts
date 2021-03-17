@@ -1,16 +1,28 @@
 type Json = import('@blackglory/types').Json
 type CustomErrorConstructor = import('@blackglory/errors').CustomErrorConstructor
 
+interface IConfiguration {
+  duration: number | null
+  limit: number | null
+}
+
 interface ICore {
   isAdmin(password: string): boolean
 
   Geyser: {
-    acquire(id: string): Promise<void>
+    /**
+     * @throws {AbortSignal}
+     */
+    acquire(id: string, abortSignal: AbortSignal): Promise<void>
+    updateConfig(id: string): Promise<void>
+    nextTick(): Promise<void>
+
+    AbortError: CustomErrorConstructor
   }
 
   Configuration: {
     getAllIds(): Promise<string[]>
-    get(id: string): Promise<Configurations>
+    get(id: string): Promise<>
 
     setDuration(geyserId: string, val: number): Promise<void>
     unsetDuration(geyserId: string): Promise<void>

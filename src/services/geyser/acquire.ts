@@ -17,6 +17,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
+      const controller = new AbortController()
+      req.raw.on('close', () => controller.abort)
+
       const id = req.params.id
       const token = req.query.token
 
@@ -31,8 +34,8 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         throw e
       }
 
-      await Core.Geyser.acquire(id)
-      reply.send()
+      await Core.Geyser.acquire(id, controller.signal)
+      reply.status(204).send()
     }
   )
 }

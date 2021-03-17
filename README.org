@@ -59,7 +59,7 @@ services:
     restart: always
     volumes:
       - 'geyser-data:/data'
-    ports:
+    portypescript:
       - '8080:8080'
 
 volumes:
@@ -81,7 +81,7 @@ services:
       - GEYSER_ACQUIRE_TOKEN_REQUIRED=true
     volumes:
       - 'geyser-data:/data'
-    ports:
+    portypescript:
       - '8080:8080'
 
 volumes:
@@ -95,16 +95,12 @@ volumes:
 **** acquire
 =GET /geyser/<id>=
 
-从特定限速器申请令牌, 如果限速器没有可用令牌, 则阻塞直到有新令牌.
+从特定限速器申请令牌, 当令牌申请成功时, 返回200.
+如果限速器没有可用令牌, 则阻塞直到有新令牌.
 id用于标识限速器.
 
-该项目中的令牌是一种类似锁的抽象概念, 与令牌桶(token bucket)无关.
-内部使用的算法类似于漏桶(leaky bucket), 但桶中的水量是无限的.
-
-如果开启基于token的访问控制, 则可能需要在Querystring提供具有read权限的token:
+如果开启基于token的访问控制, 则可能需要在Querystring提供具有acquire权限的token:
 =GET /geyser/<id>?token=<token>=
-
-当一个限速器未配置duration和limit时, acquire操作是无法进行的, 此时将会返回503.
 
 ***** Example
 ****** curl
@@ -118,8 +114,8 @@ await fetch(`http://localhost:8080/geyser/${id}`)
 #+END_SRC
 
 *** Private
-**** 配置(configurations)
-#+BEGIN_SRC ts
+**** Geyser配置
+#+BEGIN_SRC typescript
 {
   duration: number | null // 以秒为单位的时间周期, 由第一枚令牌分发时开始计算, 在指定秒数后进入下一周期, null表示继承全局值
   limit: number | null // 在周期内允许分发的令牌数量, null表示继承全局值
@@ -127,11 +123,11 @@ await fetch(`http://localhost:8080/geyser/${id}`)
 #+END_SRC
 
 可用以下环境变量作为全局设置:
-=GEYSER_DURATION=, 没有默认值.
-=GEYSER_LIMIT=, 没有默认值.
+=GEYSER_DURATION=, 默认值为Infinity.
+=GEYSER_LIMIT=, 默认值为0.
 
 ***** 获取所有具有配置的geyser id
-=GET /admin/geyser-with-configurations=
+=GET /admin/geyser-with-config=
 
 返回由JSON表示的字符串数组 =string[]=.
 
@@ -140,12 +136,12 @@ await fetch(`http://localhost:8080/geyser/${id}`)
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser-with-configurations"
+  "http://localhost:8080/admin/geyser-with-config"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch('http://localhost:8080/admin/geyser-with-configurations', {
+await fetch('http://localhost:8080/admin/geyser-with-config', {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -153,10 +149,10 @@ await fetch('http://localhost:8080/admin/geyser-with-configurations', {
 #+END_SRC
 
 ***** 获取特定限速器的配置
-=GET /admin/geyser/<id>/configurations=
+=GET /admin/geyser/<id>/config=
 
 返回JSON:
-#+BEGIN_SRC ts
+#+BEGIN_SRC typescript
 {
   duration: number | null
   limit: number | null
@@ -168,12 +164,12 @@ await fetch('http://localhost:8080/admin/geyser-with-configurations', {
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/configurations"
+  "http://localhost:8080/admin/geyser/$id/config"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/configurations`, {
+await fetch(`http://localhost:8080/admin/geyser/${id}/config`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -181,8 +177,8 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/configurations`, {
 #+END_SRC
 
 ***** 设置配置
-=PUT /admin/geyser/<geyser-id>/configurations/duration=
-=PUT /admin/geyser/<geyser-id>/configurations/limit=
+=PUT /admin/geyser/<geyser-id>/config/duration=
+=PUT /admin/geyser/<geyser-id>/config/limit=
 
 Payload必须为对应的null以外的JSON值.
 
@@ -194,12 +190,12 @@ curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
   --header "Content-Type: application/json" \
   --data "$DURATION" \
-  "http://localhost:8080/admin/geyser/$id/configurations/duration"
+  "http://localhost:8080/admin/geyser/$id/config/duration"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, {
+await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -210,8 +206,8 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, 
 #+END_SRC
 
 ***** 移除配置
-=DELETE /admin/geyser/<geyser-id>/configurations/duration=
-=DELETE /admin/geyser/<geyser-id>/configurations/limit=
+=DELETE /admin/geyser/<geyser-id>/config/duration=
+=DELETE /admin/geyser/<geyser-id>/config/limit=
 
 ****** Example
 ******* curl
@@ -219,12 +215,12 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, 
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/configurations/duration"
+  "http://localhost:8080/admin/geyser/$id/config/duration"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/configurations/duration`, {
+await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
   method: 'DELETE'
 })
 #+END_SRC
@@ -429,7 +425,7 @@ await fetch('http://localhost:8080/admin/geyser-with-token-policies')
 =GET /admin/geyser/<id>/token-policies=
 
 返回JSON:
-#+BEGIN_SRC ts
+#+BEGIN_SRC typescript
 {
   acquireTokenRequired: boolean | null
 }

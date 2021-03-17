@@ -3,7 +3,7 @@ import { idSchema } from '@src/schema'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.get(
-    '/geyser-with-configurations'
+    '/geyser-with-config'
   , {
       schema: {
         response: {
@@ -23,7 +23,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   server.get<{
     Params: { id: string }
   }>(
-    '/geyser/:id/configurations'
+    '/geyser/:id/config'
   , {
       schema: {
         params: { id: idSchema }
@@ -56,7 +56,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     Params: { id: string }
     Body: number
   }>(
-    '/geyser/:id/configurations/duration'
+    '/geyser/:id/config/duration'
   , {
       schema: {
         params: { id: idSchema }
@@ -77,7 +77,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   server.delete<{
     Params: { id: string }
   }>(
-    '/geyser/:id/configurations/duration'
+    '/geyser/:id/config/duration'
   , {
       schema: {
         params: { id: idSchema }
@@ -97,7 +97,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     Params: { id: string }
     Body: number
   }>(
-    '/geyser/:id/configurations/limit'
+    '/geyser/:id/config/limit'
   , {
       schema: {
         params: { id: idSchema }
@@ -118,7 +118,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   server.delete<{
     Params: { id: string }
   }>(
-    '/geyser/:id/configurations/limit'
+    '/geyser/:id/config/limit'
   , {
       schema: {
         params: { id: idSchema }

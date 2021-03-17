@@ -1,11 +1,6 @@
-interface Configurations {
-  duration: number | null
-  limit: number | null
-}
-
 interface IConfigurationDAO {
-  getAllIdsWithConfigurations(): Promise<string[]>
-  getConfigurations(geyserId: string): Promise<Configurations>
+  getAllIdsWithConfiguration(): Promise<string[]>
+  getConfiguration(geyserId: string): Promise<IConfiguration>
 
   setDuration(geyserId: string, val: number): Promise<void>
   unsetDuration(geyserId: string): Promise<void>
