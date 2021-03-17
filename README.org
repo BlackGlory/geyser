@@ -1,6 +1,6 @@
 * Geyser
 一个受[[https://github.com/BlackGlory/mq][mq]]启发的Web友好的自托管ad-hoc微服务,
-提供基于 HTTP 的阻塞式速率限制器,
+提供基于 HTTP 的阻塞式速率限速器,
 带有基于token和名单的访问控制策略,
 支持JSON Schema.
 
@@ -240,15 +240,15 @@ GEYSER提供两种可以同时启用的访问控制策略.
 ***** 基于名单的访问控制
 通过设置环境变量 =GEYSER_LIST_BASED_ACCESS_CONTROL= 开启基于名单的访问控制:
 - =whitelist=
-  启用基于限制器白名单的访问控制, 只有在名单内的限制器允许被访问.
+  启用基于限速器白名单的访问控制, 只有在名单内的限速器允许被访问.
 - =blacklist=
-  启用基于限制器黑名单的访问控制, 只有在名单外的限制器允许被访问.
+  启用基于限速器黑名单的访问控制, 只有在名单外的限速器允许被访问.
 
 ****** 黑名单
 ******* 获取黑名单
 =GET /admin/blacklist=
 
-获取位于黑名单中的所有限制器id, 返回JSON表示的字符串数组 =string[]=.
+获取位于黑名单中的所有限速器id, 返回JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -270,7 +270,7 @@ await fetch('http://localhost:8080/admin/blacklist', {
 ******* 添加黑名单
 =PUT /admin/blacklist/<id>=
 
-将特定限制器加入黑名单.
+将特定限速器加入黑名单.
 
 ******** Example
 ********* curl
@@ -294,7 +294,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 ******* 移除黑名单
 =DELETE /admin/blacklist/<id>=
 
-将特定限制器从黑名单中移除.
+将特定限速器从黑名单中移除.
 
 ******** Example
 ********* curl
@@ -319,7 +319,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 ******* 获取白名单
 =GET /admin/whitelist=
 
-获取位于黑名单中的所有限制器id, 返回JSON表示的字符串数组 =string[]=.
+获取位于黑名单中的所有限速器id, 返回JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -341,7 +341,7 @@ await fetch('http://localhost:8080/admin/whitelist', {
 ******* 添加白名单
 =PUT /admin/whitelist/<id>=
 
-将特定限制器加入白名单.
+将特定限速器加入白名单.
 
 ******** Example
 ********* curl
@@ -365,7 +365,7 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 ******* 移除白名单
 =DELETE /admin/whitelist/<id>=
 
-将特定限制器从白名单中移除.
+将特定限速器从白名单中移除.
 
 ******** Example
 ********* curl
@@ -391,11 +391,11 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 
 通过设置环境变量 =GEYSER_TOKEN_BASED_ACCESS_CONTROL=true= 开启基于token的访问控制.
 
-基于token的访问控制将根据限制器的token access policy决定其访问规则.
+基于token的访问控制将根据限速器的token access policy决定其访问规则.
 可通过环境变量 =GEYSER_ACQUIRE_TOKEN_REQUIRED= 设置相关默认值,
 未设置情况下为 =false=.
 
-一个限制器可以有多个token, 每个token可以单独设置acquire和read权限, 不同限制器的token不共用.
+一个限速器可以有多个token, 每个token可以单独设置acquire和read权限, 不同限速器的token不共用.
 
 基于token的访问控制作出以下假设
 - token的传输过程是安全的
@@ -403,10 +403,10 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 - token的意外泄露可以被迅速处理
 
 ****** token策略
-******* 获取所有具有token策略的限制器id
+******* 获取所有具有token策略的限速器id
 =GET /admin/geyser-with-token-policies=
 
-获取所有具有token策略的限制器id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token策略的限速器id, 返回由JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -421,7 +421,7 @@ curl \
 await fetch('http://localhost:8080/admin/geyser-with-token-policies')
 #+END_SRC
 
-******* 获取特定限制器的token策略
+******* 获取特定限速器的token策略
 =GET /admin/geyser/<id>/token-policies=
 
 返回JSON:
@@ -500,10 +500,10 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-tok
 #+END_SRC
 
 ****** token
-******* 获取所有具有token的限制器id
+******* 获取所有具有token的限速器id
 =GET /admin/geyser-with-tokens=
 
-获取所有具有token的限制器id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token的限速器id, 返回由JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -522,10 +522,10 @@ await fetch(`http://localhost:8080/admin/geyser-with-tokens`, {
 }).then(res => res.json())
 #+END_SRC
 
-******* 获取特定限制器的所有token
+******* 获取特定限速器的所有token
 =GET /admin/geyser/<id>/tokens=
 
-获取特定限制器的所有token, 返回JSON数组表示的token及其权限
+获取特定限速器的所有token, 返回JSON数组表示的token及其权限
 =Array<{ token: string, acquire: boolean }>=.
 
 ******** Example
@@ -545,7 +545,7 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens`, {
 }).then(res => res.json())
 #+END_SRC
 
-******* 为特定限制器的token设置acquire权限
+******* 为特定限速器的token设置acquire权限
 =PUT /admin/geyser/<id>/tokens/<token>/acquire=
 
 添加/更新token, 为token设置acquire权限.
@@ -569,7 +569,7 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, 
 })
 #+END_SRC
 
-******* 取消特定限制器的token的acquire权限
+******* 取消特定限速器的token的acquire权限
 =DELETE /admin/geyser/<id>/tokens/<token>/acquire=
 
 取消token的acquire权限.
