@@ -1,5 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import { idSchema, tokenSchema } from '@src/schema'
+import { AbortController } from 'abort-controller'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.get<{
