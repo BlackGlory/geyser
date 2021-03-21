@@ -1,4 +1,5 @@
 import * as ConfigInSqlite3 from '@dao/config-in-sqlite3/database'
+import { resetGeyserMap } from '@dao/data-in-memory/geyser/geyser-map'
 import { resetCache } from '@env/cache'
 import { buildServer } from '@src/server'
 
@@ -19,6 +20,7 @@ export async function stopService() {
   server.metrics.clearRegister()
   await server.close()
   clearDatabases()
+  resetGeyserMap()
   resetEnvironment()
 }
 

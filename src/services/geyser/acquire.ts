@@ -18,7 +18,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   , async (req, reply) => {
       const controller = new AbortController()
-      req.raw.on('close', () => controller.abort)
+      req.raw.on('close', () => controller.abort())
 
       const id = req.params.id
       const token = req.query.token
