@@ -76,6 +76,7 @@
     "@blackglory/go": "^0.1.0",
     "@blackglory/structures": "^0.1.14",
     "@blackglory/types": "^0.4.1",
+    "abort-controller": "^3.0.0",
     "ajv": "^7.2.3",
     "app-root-path": "^3.0.0",
     "better-sqlite3": "^7.1.2",

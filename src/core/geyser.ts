@@ -1,4 +1,4 @@
-import { GeyserDAO } from '@dao/data-in-memory'
+import { GeyserDAO } from '@dao/data-in-memory/geyser'
 import { ConfigurationDAO } from '@dao'
 import { DURATION, LIMIT } from '@env'
 
