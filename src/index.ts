@@ -1,9 +1,15 @@
 import { go } from '@blackglory/go'
+import { AbortController } from 'abort-controller'
 import * as ConfigInSqlite3 from '@src/dao/config-in-sqlite3/database'
 import { buildServer } from './server'
 import { PORT, HOST, CI } from '@env'
+import { callNextTickEverySecond } from './schedule'
+
+const tickLoopController = new AbortController()
 
 process.on('exit', () => {
+  tickLoopController.abort()
+
   ConfigInSqlite3.closeDatabase()
 })
 process.on('SIGHUP', () => process.exit(128 + 1))
@@ -17,6 +23,8 @@ go(async () => {
   const server = buildServer()
   await server.listen(PORT(), HOST())
   if (CI()) await process.exit()
+
+  callNextTickEverySecond(tickLoopController.signal)
 
   process.send?.('ready')
 })
