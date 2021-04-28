@@ -89,28 +89,28 @@ volumes:
 #+END_SRC
 
 ** API
-所有API中的id都需要满足此正则表达式: =^[a-zA-Z0-9\.\-_]{0,255}$=
+所有API中的namespace都需要满足此正则表达式: =^[a-zA-Z0-9\.\-_]{0,255}$=
 
 *** Public
 **** acquire
-=GET /geyser/<id>=
+=GET /geyser/<namespace>=
 
 从特定限速器申请令牌, 当令牌申请成功时, 返回200.
 如果限速器没有可用令牌, 则阻塞直到有新令牌.
-id用于标识限速器.
+namespace用于标识限速器.
 
 如果开启基于token的访问控制, 则可能需要在Querystring提供具有acquire权限的token:
-=GET /geyser/<id>?token=<token>=
+=GET /geyser/<namespace>?token=<token>=
 
 ***** Example
 ****** curl
 #+BEGIN_SRC sh
-curl "http://localhost:8080/geyser/$id"
+curl "http://localhost:8080/geyser/$namespace"
 #+END_SRC
 
 ****** JavaScript
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/geyser/${id}`)
+await fetch(`http://localhost:8080/geyser/${namespace}`)
 #+END_SRC
 
 *** Private
@@ -126,7 +126,7 @@ await fetch(`http://localhost:8080/geyser/${id}`)
 =GEYSER_DURATION=, 默认值为Infinity.
 =GEYSER_LIMIT=, 默认值为0.
 
-***** 获取所有具有配置的geyser id
+***** 获取所有具有配置的namespace
 =GET /admin/geyser-with-config=
 
 返回由JSON表示的字符串数组 =string[]=.
@@ -149,7 +149,7 @@ await fetch('http://localhost:8080/admin/geyser-with-config', {
 #+END_SRC
 
 ***** 获取特定限速器的配置
-=GET /admin/geyser/<id>/config=
+=GET /admin/geyser/<namespace>/config=
 
 返回JSON:
 #+BEGIN_SRC typescript
@@ -164,12 +164,12 @@ await fetch('http://localhost:8080/admin/geyser-with-config', {
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/config"
+  "http://localhost:8080/admin/geyser/$namespace/config"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/config`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/config`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -177,8 +177,8 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/config`, {
 #+END_SRC
 
 ***** 设置配置
-=PUT /admin/geyser/<geyser-id>/config/duration=
-=PUT /admin/geyser/<geyser-id>/config/limit=
+=PUT /admin/geyser/<namespace>/config/duration=
+=PUT /admin/geyser/<namespace>/config/limit=
 
 Payload必须为对应的null以外的JSON值.
 
@@ -190,12 +190,12 @@ curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
   --header "Content-Type: application/json" \
   --data "$DURATION" \
-  "http://localhost:8080/admin/geyser/$id/config/duration"
+  "http://localhost:8080/admin/geyser/$namespace/config/duration"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/config/duration`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -206,8 +206,8 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
 #+END_SRC
 
 ***** 移除配置
-=DELETE /admin/geyser/<geyser-id>/config/duration=
-=DELETE /admin/geyser/<geyser-id>/config/limit=
+=DELETE /admin/geyser/<namespace>/config/duration=
+=DELETE /admin/geyser/<namespace>/config/limit=
 
 ****** Example
 ******* curl
@@ -215,12 +215,12 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/config/duration"
+  "http://localhost:8080/admin/geyser/$namespace/config/duration"
 #+END_SRC
 
 ******* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/config/duration`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/config/duration`, {
   method: 'DELETE'
 })
 #+END_SRC
@@ -248,7 +248,7 @@ GEYSER提供两种可以同时启用的访问控制策略.
 ******* 获取黑名单
 =GET /admin/blacklist=
 
-获取位于黑名单中的所有限速器id, 返回JSON表示的字符串数组 =string[]=.
+获取位于黑名单中的所有限速器namespace, 返回JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -268,7 +268,7 @@ await fetch('http://localhost:8080/admin/blacklist', {
 #+END_SRC
 
 ******* 添加黑名单
-=PUT /admin/blacklist/<id>=
+=PUT /admin/blacklist/<namespace>=
 
 将特定限速器加入黑名单.
 
@@ -278,12 +278,12 @@ await fetch('http://localhost:8080/admin/blacklist', {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/blacklist/$id"
+  "http://localhost:8080/admin/blacklist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+await fetch(`http://localhost:8080/admin/blacklist/${namespace}`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -292,7 +292,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 #+END_SRC
 
 ******* 移除黑名单
-=DELETE /admin/blacklist/<id>=
+=DELETE /admin/blacklist/<namespace>=
 
 将特定限速器从黑名单中移除.
 
@@ -302,12 +302,12 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 curl \
   --request DELEjTE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/blacklist/$id"
+  "http://localhost:8080/admin/blacklist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
+await fetch(`http://localhost:8080/admin/blacklist/${namespace}`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -319,7 +319,7 @@ await fetch(`http://localhost:8080/admin/blacklist/${id}`, {
 ******* 获取白名单
 =GET /admin/whitelist=
 
-获取位于黑名单中的所有限速器id, 返回JSON表示的字符串数组 =string[]=.
+获取位于黑名单中的所有限速器namespace, 返回JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -339,7 +339,7 @@ await fetch('http://localhost:8080/admin/whitelist', {
 #+END_SRC
 
 ******* 添加白名单
-=PUT /admin/whitelist/<id>=
+=PUT /admin/whitelist/<namespace>=
 
 将特定限速器加入白名单.
 
@@ -349,12 +349,12 @@ await fetch('http://localhost:8080/admin/whitelist', {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/whitelist/$id"
+  "http://localhost:8080/admin/whitelist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+await fetch(`http://localhost:8080/admin/whitelist/${namespace}`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -363,7 +363,7 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 #+END_SRC
 
 ******* 移除白名单
-=DELETE /admin/whitelist/<id>=
+=DELETE /admin/whitelist/<namespace>=
 
 将特定限速器从白名单中移除.
 
@@ -373,12 +373,12 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/whitelist/$id"
+  "http://localhost:8080/admin/whitelist/$namespace"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
+await fetch(`http://localhost:8080/admin/whitelist/${namespace}`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -403,10 +403,10 @@ await fetch(`http://localhost:8080/admin/whitelist/${id}`, {
 - token的意外泄露可以被迅速处理
 
 ****** token策略
-******* 获取所有具有token策略的限速器id
+******* 获取所有具有token策略的限速器namespace
 =GET /admin/geyser-with-token-policies=
 
-获取所有具有token策略的限速器id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token策略的限速器namespace, 返回由JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -422,7 +422,7 @@ await fetch('http://localhost:8080/admin/geyser-with-token-policies')
 #+END_SRC
 
 ******* 获取特定限速器的token策略
-=GET /admin/geyser/<id>/token-policies=
+=GET /admin/geyser/<namespace>/token-policies=
 
 返回JSON:
 #+BEGIN_SRC typescript
@@ -437,12 +437,12 @@ await fetch('http://localhost:8080/admin/geyser-with-token-policies')
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/token-policies"
+  "http://localhost:8080/admin/geyser/$namespace/token-policies"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fethc(`http://localhost:8080/admin/geyser/${id}/token-policies`, {
+await fethc(`http://localhost:8080/admin/geyser/${namespace}/token-policies`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -450,7 +450,7 @@ await fethc(`http://localhost:8080/admin/geyser/${id}/token-policies`, {
 #+END_SRC
 
 ******* 设置token策略
-=PUT /admin/geyser/<id>/token-policies/acquire-token-required=
+=PUT /admin/geyser/<namespace>/token-policies/acquire-token-required=
 
 Payload必须是一个布尔值.
 
@@ -462,12 +462,12 @@ curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
   --header "Content-Type: application/json" \
   --data "$WRITE_TOKEN_REQUIRED" \
-  "http://localhost:8080/admin/geyser/$id/token-policies/acquire-token-required"
+  "http://localhost:8080/admin/geyser/$namespace/token-policies/acquire-token-required"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-token-required`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/token-policies/acquire-token-required`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -478,7 +478,7 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-tok
 #+END_SRC
 
 ******* 移除token策略
-=DELETE /admin/geyser/<id>/token-policies/acquire-token-required=
+=DELETE /admin/geyser/<namespace>/token-policies/acquire-token-required=
 
 ******** Example
 ********* curl
@@ -486,12 +486,12 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-tok
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/token-policies/acquire-token-required"
+  "http://localhost:8080/admin/geyser/$namespace/token-policies/acquire-token-required"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-token-required`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/token-policies/acquire-token-required`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -500,10 +500,10 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/token-policies/acquire-tok
 #+END_SRC
 
 ****** token
-******* 获取所有具有token的限速器id
+******* 获取所有具有token的限速器namespace
 =GET /admin/geyser-with-tokens=
 
-获取所有具有token的限速器id, 返回由JSON表示的字符串数组 =string[]=.
+获取所有具有token的限速器namespace, 返回由JSON表示的字符串数组 =string[]=.
 
 ******** Example
 ********* curl
@@ -523,7 +523,7 @@ await fetch(`http://localhost:8080/admin/geyser-with-tokens`, {
 #+END_SRC
 
 ******* 获取特定限速器的所有token
-=GET /admin/geyser/<id>/tokens=
+=GET /admin/geyser/<namespace>/tokens=
 
 获取特定限速器的所有token, 返回JSON数组表示的token及其权限
 =Array<{ token: string, acquire: boolean }>=.
@@ -533,12 +533,12 @@ await fetch(`http://localhost:8080/admin/geyser-with-tokens`, {
 #+BEGIN_SRC sh
 curl \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/tokens"
+  "http://localhost:8080/admin/geyser/$namespace/tokens"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/tokens`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/tokens`, {
   headers: {
     'Authorization': `Bearer ${adminPassword}`
   }
@@ -546,7 +546,7 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens`, {
 #+END_SRC
 
 ******* 为特定限速器的token设置acquire权限
-=PUT /admin/geyser/<id>/tokens/<token>/acquire=
+=PUT /admin/geyser/<namespace>/tokens/<token>/acquire=
 
 添加/更新token, 为token设置acquire权限.
 
@@ -556,12 +556,12 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens`, {
 curl \
   --request PUT \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/tokens/$token/acquire"
+  "http://localhost:8080/admin/geyser/$namespace/tokens/$token/acquire"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/tokens/${token}/acquire`, {
   method: 'PUT'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
@@ -570,7 +570,7 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, 
 #+END_SRC
 
 ******* 取消特定限速器的token的acquire权限
-=DELETE /admin/geyser/<id>/tokens/<token>/acquire=
+=DELETE /admin/geyser/<namespace>/tokens/<token>/acquire=
 
 取消token的acquire权限.
 
@@ -580,12 +580,12 @@ await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, 
 curl \
   --request DELETE \
   --header "Authorization: Bearer $ADMIN_PASSWORD" \
-  "http://localhost:8080/admin/geyser/$id/tokens/$token/acquire"
+  "http://localhost:8080/admin/geyser/$namespace/tokens/$token/acquire"
 #+END_SRC
 
 ********* fetch
 #+BEGIN_SRC js
-await fetch(`http://localhost:8080/admin/geyser/${id}/tokens/${token}/acquire`, {
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/tokens/${token}/acquire`, {
   method: 'DELETE'
 , headers: {
     'Authorization': `Bearer ${adminPassword}`
