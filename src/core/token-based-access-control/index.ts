@@ -25,15 +25,17 @@ function isEnabled() {
 /**
  * @throws {Unauthorized}
  */
-async function checkAcquirePermission(id: string, token?: string) {
+async function checkAcquirePermission(namespace: string, token?: string) {
   if (!isEnabled()) return
 
   const acquireTokenRequired =
-    (await TokenPolicy.get(id)).acquireTokenRequired
+    (await TokenPolicy.get(namespace)).acquireTokenRequired
   ?? ACQUIRE_TOKEN_REQUIRED()
 
   if (acquireTokenRequired) {
     if (!token) throw new Unauthorized()
-    if (!await AccessControlDAO.matchAcquireToken({ token, id })) throw new Unauthorized()
+    if (!await AccessControlDAO.matchAcquireToken({ token, namespace })) {
+      throw new Unauthorized()
+    }
   }
 }

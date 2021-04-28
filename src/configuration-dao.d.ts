@@ -1,10 +1,10 @@
 interface IConfigurationDAO {
-  getAllIdsWithConfiguration(): Promise<string[]>
-  getConfiguration(geyserId: string): Promise<IConfiguration>
+  getAllNamespacesWithConfiguration(): Promise<string[]>
+  getConfiguration(namespace: string): Promise<IConfiguration>
 
-  setDuration(geyserId: string, val: number): Promise<void>
-  unsetDuration(geyserId: string): Promise<void>
+  setDuration(namespace: string, val: number): Promise<void>
+  unsetDuration(namespace: string): Promise<void>
 
-  setLimit(geyserId: string, val: number): Promise<void>
-  unsetLimit(geyserId: string): Promise<void>
+  setLimit(namespace: string, val: number): Promise<void>
+  unsetLimit(namespace: string): Promise<void>
 }

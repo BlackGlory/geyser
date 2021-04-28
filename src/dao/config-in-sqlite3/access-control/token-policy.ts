@@ -1,63 +1,64 @@
 import { getDatabase } from '../database'
 
-export function getAllIdsWithTokenPolicies(): string[] {
+export function getAllNamespacesWithTokenPolicies(): string[] {
   const result = getDatabase().prepare(`
-    SELECT geyser_id
+    SELECT namespace
       FROM geyser_token_policy;
   `).all()
-  return result.map(x => x['geyser_id'])
+  return result.map(x => x['namespace'])
 }
 
-export function getTokenPolicies(id: string): { acquireTokenRequired: boolean | null } {
+export function getTokenPolicies(namespace: string): { acquireTokenRequired: boolean | null } {
   const row: {
     'acquire_token_required': number | null
   } = getDatabase().prepare(`
     SELECT acquire_token_required
       FROM geyser_token_policy
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 
   if (row) {
     const acquireTokenRequired = row['acquire_token_required']
 
     return {
-      acquireTokenRequired: acquireTokenRequired === null
-                            ? null
-                            : numberToBoolean(acquireTokenRequired)
+      acquireTokenRequired:
+        acquireTokenRequired === null
+        ? null
+        : numberToBoolean(acquireTokenRequired)
     }
   } else {
     return { acquireTokenRequired: null }
   }
 }
 
-export function setAcquireTokenRequired(id: string, val: boolean): void {
+export function setAcquireTokenRequired(namespace: string, val: boolean): void {
   getDatabase().prepare(`
-    INSERT INTO geyser_token_policy (geyser_id, acquire_token_required)
-    VALUES ($id, $acquireTokenRequired)
-        ON CONFLICT(geyser_id)
+    INSERT INTO geyser_token_policy (namespace, acquire_token_required)
+    VALUES ($namespace, $acquireTokenRequired)
+        ON CONFLICT(namespace)
         DO UPDATE SET acquire_token_required = $acquireTokenRequired;
-  `).run({ id, acquireTokenRequired: booleanToNumber(val) })
+  `).run({ namespace, acquireTokenRequired: booleanToNumber(val) })
 }
 
-export function unsetAcquireTokenRequired(id: string): void {
+export function unsetAcquireTokenRequired(namespace: string): void {
   const db = getDatabase()
   db.transaction(() => {
     db.prepare(`
       UPDATE geyser_token_policy
          SET acquire_token_required = NULL
-       WHERE geyser_id = $id;
-    `).run({ id })
+       WHERE namespace = $namespace;
+    `).run({ namespace })
 
-    deleteNoPoliciesRow(id)
+    deleteNoPoliciesRow(namespace)
   })()
 }
 
-function deleteNoPoliciesRow(id: string): void {
+function deleteNoPoliciesRow(namespace: string): void {
   getDatabase().prepare(`
     DELETE FROM geyser_token_policy
-     WHERE geyser_id = $id
+     WHERE namespace = $namespace
        AND acquire_token_required = NULL
-  `).run({ id })
+  `).run({ namespace })
 }
 
 function numberToBoolean(val: number): boolean {

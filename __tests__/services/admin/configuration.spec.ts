@@ -57,15 +57,15 @@ describe('Configuration', () => {
     })
   })
 
-  describe('GET /admin/geyser/:id/config', () => {
+  describe('GET /admin/geyser/:namespace/config', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config`)
+        , pathname(`/admin/geyser/${namespace}/config`)
         , headers(createAuthHeaders())
         ))
 
@@ -92,11 +92,11 @@ describe('Configuration', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config`)
+        , pathname(`/admin/geyser/${namespace}/config`)
         ))
 
         expect(res.status).toBe(401)
@@ -106,11 +106,11 @@ describe('Configuration', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config`)
+        , pathname(`/admin/geyser/${namespace}/config`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -119,16 +119,16 @@ describe('Configuration', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/config/duration', () => {
+  describe('PUT /admin/geyser/:namespace/config/duration', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -139,12 +139,12 @@ describe('Configuration', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         , json(val)
         ))
 
@@ -155,12 +155,12 @@ describe('Configuration', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -170,15 +170,15 @@ describe('Configuration', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/config/duration', () => {
+  describe('DELETE /admin/geyser/:namespace/config/duration', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         , headers(createAuthHeaders())
         ))
 
@@ -188,11 +188,11 @@ describe('Configuration', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         ))
 
         expect(res.status).toBe(401)
@@ -202,11 +202,11 @@ describe('Configuration', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/duration`)
+        , pathname(`/admin/geyser/${namespace}/config/duration`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -215,16 +215,16 @@ describe('Configuration', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/config/limit', () => {
+  describe('PUT /admin/geyser/:namespace/config/limit', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -235,12 +235,12 @@ describe('Configuration', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         , json(val)
         ))
 
@@ -251,12 +251,12 @@ describe('Configuration', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = 100
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -266,15 +266,15 @@ describe('Configuration', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/config/limit', () => {
+  describe('DELETE /admin/geyser/:namespace/config/limit', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         , headers(createAuthHeaders())
         ))
 
@@ -284,11 +284,11 @@ describe('Configuration', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         ))
 
         expect(res.status).toBe(401)
@@ -298,11 +298,11 @@ describe('Configuration', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/config/limit`)
+        , pathname(`/admin/geyser/${namespace}/config/limit`)
         , headers(createAuthHeaders('bad'))
         ))
 

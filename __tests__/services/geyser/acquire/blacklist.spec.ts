@@ -14,31 +14,31 @@ afterEach(stopService)
 
 describe('blacklist', () => {
   describe('enabled', () => {
-    describe('id in blacklist', () => {
+    describe('namespace in blacklist', () => {
       it('403', async () => {
         process.env.GEYSER_LIST_BASED_ACCESS_CONTROL = 'blacklist'
-        const id = 'id'
-        await prepareGeyser(id)
-        await AccessControlDAO.addBlacklistItem(id)
+        const namespace = 'namespace'
+        await prepareGeyser(namespace)
+        await AccessControlDAO.addBlacklistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/geyser/${id}`)
+        , pathname(`/geyser/${namespace}`)
         ))
 
         expect(res.status).toBe(403)
       })
     })
 
-    describe('id not in blacklist', () => {
+    describe('namespace not in blacklist', () => {
       it('204', async () => {
         process.env.GEYSER_LIST_BASED_ACCESS_CONTROL = 'blacklist'
-        const id = 'id'
-        await prepareGeyser(id)
+        const namespace = 'namespace'
+        await prepareGeyser(namespace)
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/geyser/${id}`)
+        , pathname(`/geyser/${namespace}`)
         ))
 
         expect(res.status).toBe(204)
@@ -47,15 +47,15 @@ describe('blacklist', () => {
   })
 
   describe('disabled', () => {
-    describe('id in blacklist', () => {
+    describe('namespace in blacklist', () => {
       it('204', async () => {
-        const id = 'id'
-        await prepareGeyser(id)
-        await AccessControlDAO.addBlacklistItem(id)
+        const namespace = 'namespace'
+        await prepareGeyser(namespace)
+        await AccessControlDAO.addBlacklistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/geyser/${id}`)
+        , pathname(`/geyser/${namespace}`)
         ))
 
         expect(res.status).toBe(204)

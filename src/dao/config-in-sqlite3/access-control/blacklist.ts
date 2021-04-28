@@ -2,37 +2,37 @@ import { getDatabase } from '../database'
 
 export function getAllBlacklistItems(): string[] {
   const result = getDatabase().prepare(`
-    SELECT geyser_id
+    SELECT namespace
       FROM geyser_blacklist;
   `).all()
 
-  return result.map(x => x['geyser_id'])
+  return result.map(x => x['namespace'])
 }
 
-export function inBlacklist(id: string): boolean {
+export function inBlacklist(namespace: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
-             SELECT *
+             SELECT 1
                FROM geyser_blacklist
-              WHERE geyser_id = $id
+              WHERE namespace = $namespace
            ) AS exist_in_blacklist;
-  `).get({ id })
+  `).get({ namespace })
 
   return result['exist_in_blacklist'] === 1
 }
 
-export function addBlacklistItem(id: string) {
+export function addBlacklistItem(namespace: string) {
   getDatabase().prepare(`
-    INSERT INTO geyser_blacklist (geyser_id)
-    VALUES ($id)
+    INSERT INTO geyser_blacklist (namespace)
+    VALUES ($namespace)
         ON CONFLICT
         DO NOTHING;
-  `).run({ id })
+  `).run({ namespace })
 }
 
-export function removeBlacklistItem(id: string) {
+export function removeBlacklistItem(namespace: string) {
   getDatabase().prepare(`
     DELETE FROM geyser_blacklist
-     WHERE geyser_id = $id;
-  `).run({ id })
+     WHERE namespace = $namespace;
+  `).run({ namespace })
 }

@@ -9,32 +9,32 @@ beforeEach(initializeDatabases)
 afterEach(clearDatabases)
 
 describe('Configuration', () => {
-  describe('getAllIdsWithConfiguration(): string[]', () => {
+  describe('getAllNamespacesWithConfiguration(): string[]', () => {
     it('return string[]', () => {
-      const id = 'id'
+      const namespace = 'namespace'
       setMinimalConfiguration({
-        geyser_id: id
+        namespace: namespace
       , duration: 100
       , limit: 10
       })
 
-      const result = DAO.getAllIdsWithConfiguration()
+      const result = DAO.getAllNamespacesWithConfiguration()
 
-      expect(result).toEqual([id])
+      expect(result).toEqual([namespace])
     })
   })
 
   describe('getConfiguration(geyserId: string): Configuration', () => {
     describe('exists', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setMinimalConfiguration({
-          geyser_id: id
+          namespace: namespace
         , duration: 100
         , limit: 10
         })
 
-        const result = DAO.getConfiguration(id)
+        const result = DAO.getConfiguration(namespace)
 
         expect(result).toEqual({
           duration: 100
@@ -45,9 +45,9 @@ describe('Configuration', () => {
 
     describe('does not exist', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.getConfiguration(id)
+        const result = DAO.getConfiguration(namespace)
 
         expect(result).toEqual({
           duration: null
@@ -59,27 +59,27 @@ describe('Configuration', () => {
 
   describe('setDuration(geyserId: string, val: number): void', () => {
     it('return undefined', () => {
-      const id = 'id'
+      const namespace = 'namespace'
 
-      const result = DAO.setDuration(id, 100)
-      const row = getRawConfiguration(id)
+      const result = DAO.setDuration(namespace, 100)
+      const row = getRawConfiguration(namespace)
 
       expect(result).toBeUndefined()
       expect(row).toMatchObject({ duration: 100 })
     })
   })
 
-  describe('unsetDuration(id: string): void', () => {
+  describe('unsetDuration(namespace: string): void', () => {
     describe('exists', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setMinimalConfiguration({
-          geyser_id: id
+          namespace: namespace
         , duration: 100
         })
 
-        const result = DAO.unsetDuration(id)
-        const row = getRawConfiguration(id)
+        const result = DAO.unsetDuration(namespace)
+        const row = getRawConfiguration(namespace)
 
         expect(result).toBeUndefined()
         expect(row).toMatchObject({ duration: null })
@@ -88,39 +88,39 @@ describe('Configuration', () => {
 
     describe('does not exist', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.unsetDuration(id)
+        const result = DAO.unsetDuration(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawConfiguration(id)).toBeFalse()
+        expect(hasRawConfiguration(namespace)).toBeFalse()
       })
     })
   })
 
   describe('setLimit(geyserId: string, val: number): void', () => {
     it('return undefined', () => {
-      const id = 'id'
+      const namespace = 'namespace'
 
-      const result = DAO.setLimit(id, 10)
-      const row = getRawConfiguration(id)
+      const result = DAO.setLimit(namespace, 10)
+      const row = getRawConfiguration(namespace)
 
       expect(result).toBeUndefined()
       expect(row).toMatchObject({ limit: 10 })
     })
   })
 
-  describe('unsetLimit(id: string): void', () => {
+  describe('unsetLimit(namespace: string): void', () => {
     describe('exists', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setMinimalConfiguration({
-          geyser_id: id
+          namespace: namespace
         , limit: 10
         })
 
-        const result = DAO.unsetLimit(id)
-        const row = getRawConfiguration(id)
+        const result = DAO.unsetLimit(namespace)
+        const row = getRawConfiguration(namespace)
 
         expect(result).toBeUndefined()
         expect(row).toMatchObject({ limit: null })
@@ -129,12 +129,12 @@ describe('Configuration', () => {
 
     describe('does not exist', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.unsetLimit(id)
+        const result = DAO.unsetLimit(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawConfiguration(id)).toBeFalse()
+        expect(hasRawConfiguration(namespace)).toBeFalse()
       })
     })
   })

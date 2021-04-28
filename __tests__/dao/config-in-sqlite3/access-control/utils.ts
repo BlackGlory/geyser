@@ -1,74 +1,74 @@
 import { getDatabase } from '@dao/config-in-sqlite3/database'
 
 interface IRawBlacklist {
-  geyser_id: string
+  namespace: string
 }
 
 interface IRawWhitelist {
-  geyser_id: string
+  namespace: string
 }
 
 interface IRawTokenPolicy {
-  geyser_id: string
+  namespace: string
   acquire_token_required: number | null
 }
 
 interface IRawToken {
   token: string
-  geyser_id: string
+  namespace: string
   acquire_permission: number
 }
 
 export function setRawBlacklist(item: IRawBlacklist): IRawBlacklist {
   getDatabase().prepare(`
-    INSERT INTO geyser_blacklist (geyser_id)
-    VALUES ($geyser_id);
+    INSERT INTO geyser_blacklist (namespace)
+    VALUES ($namespace);
   `).run(item)
 
   return item
 }
 
-export function hasRawBlacklist(id: string): boolean {
-  return !!getRawBlacklist(id)
+export function hasRawBlacklist(namespace: string): boolean {
+  return !!getRawBlacklist(namespace)
 }
 
-export function getRawBlacklist(id: string): IRawBlacklist | null {
+export function getRawBlacklist(namespace: string): IRawBlacklist | null {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_blacklist
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
 export function setRawWhitelist(item: IRawWhitelist): IRawWhitelist {
   getDatabase().prepare(`
-    INSERT INTO geyser_whitelist (geyser_id)
-    VALUES ($geyser_id);
+    INSERT INTO geyser_whitelist (namespace)
+    VALUES ($namespace);
   `).run(item)
 
   return item
 }
 
-export function hasRawWhitelist(id: string): boolean {
-  return !!getRawWhitelist(id)
+export function hasRawWhitelist(namespace: string): boolean {
+  return !!getRawWhitelist(namespace)
 }
 
-export function getRawWhitelist(id: string): IRawWhitelist | null {
+export function getRawWhitelist(namespace: string): IRawWhitelist | null {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_whitelist
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
 export function setRawTokenPolicy<T extends IRawTokenPolicy>(item: T): T {
   getDatabase().prepare(`
     INSERT INTO geyser_token_policy (
-      geyser_id
+      namespace
     , acquire_token_required
     )
     VALUES (
-      $geyser_id
+      $namespace
     , $acquire_token_required
     );
   `).run(item)
@@ -76,28 +76,28 @@ export function setRawTokenPolicy<T extends IRawTokenPolicy>(item: T): T {
   return item
 }
 
-export function hasRawTokenPolicy(id: string): boolean {
-  return !!getRawTokenPolicy(id)
+export function hasRawTokenPolicy(namespace: string): boolean {
+  return !!getRawTokenPolicy(namespace)
 }
 
-export function getRawTokenPolicy(id: string): IRawTokenPolicy | null {
+export function getRawTokenPolicy(namespace: string): IRawTokenPolicy | null {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_token_policy
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }
 
 export function setRawToken(item: IRawToken): IRawToken {
   getDatabase().prepare(`
     INSERT INTO geyser_token (
       token
-    , geyser_id
+    , namespace
     , acquire_permission
     )
     VALUES (
       $token
-    , $geyser_id
+    , $namespace
     , $acquire_permission
     );
   `).run(item)
@@ -105,15 +105,15 @@ export function setRawToken(item: IRawToken): IRawToken {
   return item
 }
 
-export function hasRawToken(token: string, id: string): boolean {
-  return !!getRawToken(token, id)
+export function hasRawToken(token: string, namespace: string): boolean {
+  return !!getRawToken(token, namespace)
 }
 
-export function getRawToken(token: string, id: string): IRawToken | null {
+export function getRawToken(token: string, namespace: string): IRawToken | null {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_token
      WHERE token = $token
-       AND geyser_id = $id;
-  `).get({ token, id })
+       AND namespace = $namespace;
+  `).get({ token, namespace })
 }

@@ -4,10 +4,10 @@ import { GeyserNotExist } from './errors'
 /**
  * @throws {GeyserNotExist}
  */
-export async function update(id: string, config: IGeyserConfig): Promise<void> {
+export async function update(namespace: string, config: IGeyserConfig): Promise<void> {
   const map = getGeyserMap()
 
-  if (!map[id]) throw new GeyserNotExist()
+  if (!map[namespace]) throw new GeyserNotExist()
 
-  map[id].updateConfig(config)
+  map[namespace].updateConfig(config)
 }

@@ -1,14 +1,14 @@
 import { getDatabase } from '../database'
 
-export function getAllIdsWithConfiguration(): string[] {
+export function getAllNamespacesWithConfiguration(): string[] {
   const result = getDatabase().prepare(`
-    SELECT geyser_id
+    SELECT namespace
       FROM geyser_configuration;
   `).all()
-  return result.map(x => x['geyser_id'])
+  return result.map(x => x['namespace'])
 }
 
-export function getConfiguration(id: string): IConfiguration {
+export function getConfiguration(namespace: string): IConfiguration {
   const row: {
     'duration': number | null
     'limit': number | null
@@ -16,8 +16,8 @@ export function getConfiguration(id: string): IConfiguration {
     SELECT duration
          , "limit"
       FROM geyser_configuration
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 
   if (row) {
     return {
@@ -32,55 +32,55 @@ export function getConfiguration(id: string): IConfiguration {
   }
 }
 
-export function setDuration(id: string, val: number): void {
+export function setDuration(namespace: string, val: number): void {
   getDatabase().prepare(`
-    INSERT INTO geyser_configuration (geyser_id, duration)
-    VALUES ($id, $duration)
-        ON CONFLICT(geyser_id)
+    INSERT INTO geyser_configuration (namespace, duration)
+    VALUES ($namespace, $duration)
+        ON CONFLICT(namespace)
         DO UPDATE SET duration = $duration;
-  `).run({ id, duration: val })
+  `).run({ namespace, duration: val })
 }
 
-export function unsetDuration(id: string): void {
+export function unsetDuration(namespace: string): void {
   const db = getDatabase()
   db.transaction(() => {
     db.prepare(`
       UPDATE geyser_configuration
          SET duration = NULL
-       WHERE geyser_id = $id;
-    `).run({ id })
+       WHERE namespace = $namespace;
+    `).run({ namespace })
 
-    deleteNoConfigurationsRow(id)
+    deleteNoConfigurationsRow(namespace)
   })()
 }
 
-export function setLimit(id: string, val: number) {
+export function setLimit(namespace: string, val: number) {
   getDatabase().prepare(`
-    INSERT INTO geyser_configuration (geyser_id, "limit")
-    VALUES ($id, $limit)
-        ON CONFLICT(geyser_id)
+    INSERT INTO geyser_configuration (namespace, "limit")
+    VALUES ($namespace, $limit)
+        ON CONFLICT(namespace)
         DO UPDATE SET "limit" = $limit;
-  `).run({ id, limit: val })
+  `).run({ namespace, limit: val })
 }
 
-export function unsetLimit(id: string): void {
+export function unsetLimit(namespace: string): void {
   const db = getDatabase()
   db.transaction(() => {
     db.prepare(`
       UPDATE geyser_configuration
          SET "limit" = NULL
-       WHERE geyser_id = $id;
-    `).run({ id })
+       WHERE namespace = $namespace;
+    `).run({ namespace })
 
-    deleteNoConfigurationsRow(id)
+    deleteNoConfigurationsRow(namespace)
   })()
 }
 
-function deleteNoConfigurationsRow(id: string): void {
+function deleteNoConfigurationsRow(namespace: string): void {
   getDatabase().prepare(`
     DELETE FROM geyser_configuration
-     WHERE geyser_id = $id
+     WHERE namespace = $namespace
        AND duration = NULL
        AND "limit" = NULL;
-  `).run({ id })
+  `).run({ namespace })
 }

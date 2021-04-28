@@ -14,19 +14,19 @@ afterEach(stopService)
 
 describe('token-based access control', () => {
   describe('enabled', () => {
-    describe('id need delete tokens', () => {
+    describe('namespace need delete tokens', () => {
       describe('token matched', () => {
         it('204', async () => {
           process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await prepareGeyser(id)
-          await AccessControlDAO.setAcquireTokenRequired(id, true)
-          await AccessControlDAO.setAcquireToken({ id: id, token })
+          await prepareGeyser(namespace)
+          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
+          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           , searchParam('token', token)
           ))
 
@@ -37,15 +37,15 @@ describe('token-based access control', () => {
       describe('token does not matched', () => {
         it('401', async () => {
           process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await prepareGeyser(id)
-          await AccessControlDAO.setAcquireTokenRequired(id, true)
-          await AccessControlDAO.setAcquireToken({ id: id, token })
+          await prepareGeyser(namespace)
+          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
+          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           , searchParam('token', 'bad')
           ))
 
@@ -56,15 +56,15 @@ describe('token-based access control', () => {
       describe('no token', () => {
         it('401', async () => {
           process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await prepareGeyser(id)
-          await AccessControlDAO.setAcquireTokenRequired(id, true)
-          await AccessControlDAO.setAcquireToken({ id: id, token })
+          await prepareGeyser(namespace)
+          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
+          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           ))
 
           expect(res.status).toBe(401)
@@ -72,17 +72,17 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not need acquire tokens', () => {
+    describe('namespace does not need acquire tokens', () => {
       describe('ACQUIRE_TOKEN_REQUIRED=true', () => {
         it('401', async () => {
           process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL = 'true'
           process.env.GEYSER_ACQUIRE_TOKEN_REQUIRED = 'true'
-          const id = 'id'
-          await prepareGeyser(id)
+          const namespace = 'namespace'
+          await prepareGeyser(namespace)
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           ))
 
           expect(res.status).toBe(401)
@@ -92,12 +92,12 @@ describe('token-based access control', () => {
       describe('ACQUIRE_TOKEN_REQUIRED=false', () => {
         it('204', async () => {
           process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL = 'true'
-          const id = 'id'
-          await prepareGeyser(id)
+          const namespace = 'namespace'
+          await prepareGeyser(namespace)
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           ))
 
           expect(res.status).toBe(204)
@@ -107,18 +107,18 @@ describe('token-based access control', () => {
   })
 
   describe('disabled', () => {
-    describe('id need acquire tokens', () => {
+    describe('namespace need acquire tokens', () => {
       describe('no token', () => {
         it('204', async () => {
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await prepareGeyser(id)
-          await AccessControlDAO.setAcquireTokenRequired(id, true)
-          await AccessControlDAO.setAcquireToken({ id: id, token })
+          await prepareGeyser(namespace)
+          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
+          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           ))
 
           expect(res.status).toBe(204)
@@ -126,19 +126,19 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('id does not need acquire tokens', () => {
+    describe('namespace does not need acquire tokens', () => {
       describe('ACQUIRE_TOKEN_REQUIRED=true', () => {
         it('204', async () => {
           process.env.GEYSER_ACQUIRE_TOKEN_REQUIRED = 'true'
-          const id = 'id'
+          const namespace = 'namespace'
           const token = 'token'
-          await prepareGeyser(id)
-          await AccessControlDAO.setAcquireTokenRequired(id, true)
-          await AccessControlDAO.setAcquireToken({ id: id, token })
+          await prepareGeyser(namespace)
+          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
+          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
-          , pathname(`/geyser/${id}`)
+          , pathname(`/geyser/${namespace}`)
           ))
 
           expect(res.status).toBe(204)

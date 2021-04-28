@@ -13,12 +13,12 @@ afterEach(stopService)
 
 describe('no access control', () => {
   it('204', async () => {
-    const id = 'id'
-    await prepareGeyser(id)
+    const namespace = 'namespace'
+    await prepareGeyser(namespace)
 
     const res = await fetch(get(
       url(getAddress())
-    , pathname(`/geyser/${id}`)
+    , pathname(`/geyser/${namespace}`)
     ))
 
     expect(res.status).toBe(204)

@@ -58,15 +58,15 @@ describe('TBAC', () => {
     })
   })
 
-  describe('GET /admin/geyser/:id/tokens', () => {
+  describe('GET /admin/geyser/:namespace/tokens', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens`)
+        , pathname(`/admin/geyser/${namespace}/tokens`)
         , headers(createAuthHeaders())
         ))
 
@@ -88,11 +88,11 @@ describe('TBAC', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens`)
+        , pathname(`/admin/geyser/${namespace}/tokens`)
         ))
 
         expect(res.status).toBe(401)
@@ -102,11 +102,11 @@ describe('TBAC', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens`)
+        , pathname(`/admin/geyser/${namespace}/tokens`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -115,16 +115,16 @@ describe('TBAC', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/tokens/:token/acquire', () => {
+  describe('PUT /admin/geyser/:namespace/tokens/:token/acquire', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         , headers(createAuthHeaders())
         ))
 
@@ -134,12 +134,12 @@ describe('TBAC', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         ))
 
         expect(res.status).toBe(401)
@@ -149,12 +149,12 @@ describe('TBAC', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -163,16 +163,16 @@ describe('TBAC', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/tokens/:token/acquire', () => {
+  describe('DELETE /admin/geyser/:namespace/tokens/:token/acquire', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         , headers(createAuthHeaders())
         ))
 
@@ -182,12 +182,12 @@ describe('TBAC', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         ))
 
         expect(res.status).toBe(401)
@@ -197,12 +197,12 @@ describe('TBAC', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const token = 'token'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/tokens/${token}/acquire`)
+        , pathname(`/admin/geyser/${namespace}/tokens/${token}/acquire`)
         , headers(createAuthHeaders('bad'))
         ))
 

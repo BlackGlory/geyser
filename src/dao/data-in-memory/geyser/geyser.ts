@@ -9,7 +9,7 @@ export class Geyser {
   duration!: number
   limit!: number
 
-  constructor(public readonly id: string, config: IGeyserConfig) {
+  constructor(public readonly namespace: string, config: IGeyserConfig) {
     this.updateConfig(config)
   }
 

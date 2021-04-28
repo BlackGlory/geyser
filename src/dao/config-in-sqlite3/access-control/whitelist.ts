@@ -2,37 +2,37 @@ import { getDatabase } from '../database'
 
 export function getAllWhitelistItems(): string[] {
   const result = getDatabase().prepare(`
-    SELECT geyser_id
+    SELECT namespace
       FROM geyser_whitelist;
   `).all()
 
-  return result.map(x => x['geyser_id'])
+  return result.map(x => x['namespace'])
 }
 
-export function inWhitelist(id: string): boolean {
+export function inWhitelist(namespace: string): boolean {
   const result = getDatabase().prepare(`
     SELECT EXISTS(
-             SELECT *
+             SELECT 1
                FROM geyser_whitelist
-              WHERE geyser_id = $id
+              WHERE namespace = $namespace
            ) AS exist_in_whitelist;
-  `).get({ id })
+  `).get({ namespace: namespace })
 
   return result['exist_in_whitelist'] === 1
 }
 
-export function addWhitelistItem(id: string) {
+export function addWhitelistItem(namespace: string) {
   getDatabase().prepare(`
-    INSERT INTO geyser_whitelist (geyser_id)
-    VALUES ($id)
+    INSERT INTO geyser_whitelist (namespace)
+    VALUES ($namespace)
         ON CONFLICT
         DO NOTHING;
-  `).run({ id })
+  `).run({ namespace: namespace })
 }
 
-export function removeWhitelistItem(id: string) {
+export function removeWhitelistItem(namespace: string) {
   getDatabase().prepare(`
     DELETE FROM geyser_whitelist
-     WHERE geyser_id = $id;
-  `).run({ id })
+     WHERE namespace = $namespace;
+  `).run({ namespace: namespace })
 }

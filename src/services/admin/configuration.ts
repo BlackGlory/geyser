@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify'
-import { idSchema } from '@src/schema'
+import { namespaceSchema } from '@src/schema'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.get(
@@ -15,18 +15,18 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const result = await Core.Configuration.getAllIds()
+      const result = await Core.Configuration.getAllNamespaces()
       reply.send(result)
     }
   )
 
   server.get<{
-    Params: { id: string }
+    Params: { namespace: string }
   }>(
-    '/geyser/:id/config'
+    '/geyser/:namespace/config'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           200: {
             duration: {
@@ -46,20 +46,20 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      const result = await Core.Configuration.get(id)
+      const namespace = req.params.namespace
+      const result = await Core.Configuration.get(namespace)
       reply.send(result)
     }
   )
 
   server.put<{
-    Params: { id: string }
+    Params: { namespace: string }
     Body: number
   }>(
-    '/geyser/:id/config/duration'
+    '/geyser/:namespace/config/duration'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , body: { type: 'number' }
       , response: {
           204: { type: 'null' }
@@ -67,40 +67,40 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const val = req.body
-      await Core.Configuration.setDuration(id, val)
+      await Core.Configuration.setDuration(namespace, val)
       reply.status(204).send()
     }
   )
 
   server.delete<{
-    Params: { id: string }
+    Params: { namespace: string }
   }>(
-    '/geyser/:id/config/duration'
+    '/geyser/:namespace/config/duration'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           204: { type: 'null' }
         }
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      await Core.Configuration.unsetDuration(id)
+      const namespace = req.params.namespace
+      await Core.Configuration.unsetDuration(namespace)
       reply.status(204).send()
     }
   )
 
   server.put<{
-    Params: { id: string }
+    Params: { namespace: string }
     Body: number
   }>(
-    '/geyser/:id/config/limit'
+    '/geyser/:namespace/config/limit'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , body: { type: 'number' }
       , response: {
           204: { type: 'null' }
@@ -108,28 +108,28 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const val = req.body
-      await Core.Configuration.setLimit(id, val)
+      await Core.Configuration.setLimit(namespace, val)
       reply.status(204).send()
     }
   )
 
   server.delete<{
-    Params: { id: string }
+    Params: { namespace: string }
   }>(
-    '/geyser/:id/config/limit'
+    '/geyser/:namespace/config/limit'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           204: { type: 'null' }
         }
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      await Core.Configuration.unsetLimit(id)
+      const namespace = req.params.namespace
+      await Core.Configuration.unsetLimit(namespace)
       reply.status(204).send()
     }
   )

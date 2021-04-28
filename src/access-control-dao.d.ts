@@ -1,38 +1,38 @@
 interface IBlacklistDAO {
   getAllBlacklistItems(): Promise<string[]>
-  inBlacklist(id: string): Promise<boolean>
-  addBlacklistItem(id: string): Promise<void>
-  removeBlacklistItem(id: string): Promise<void>
+  inBlacklist(namespace: string): Promise<boolean>
+  addBlacklistItem(namespace: string): Promise<void>
+  removeBlacklistItem(namespace: string): Promise<void>
 }
 
 interface IWhitelistDAO {
   getAllWhitelistItems(): Promise<string[]>
-  inWhitelist(id: string): Promise<boolean>
-  addWhitelistItem(id: string): Promise<void>
-  removeWhitelistItem(id: string): Promise<void>
+  inWhitelist(namespace: string): Promise<boolean>
+  addWhitelistItem(namespace: string): Promise<void>
+  removeWhitelistItem(namespace: string): Promise<void>
 }
 
 interface ITokenDAO {
-  getAllIdsWithTokens(): Promise<string[]>
-  getAllTokens(id: string): Promise<Array<{
+  getAllNamespacesWithTokens(): Promise<string[]>
+  getAllTokens(namespace: string): Promise<Array<{
     token: string
     acquire: boolean
   }>>
 
-  hasAcquireTokens(id: string): Promise<boolean>
-  matchAcquireToken(props: { token: string; id: string }): Promise<boolean>
-  setAcquireToken(props: { token: string; id: string }): Promise<void>
-  unsetAcquireToken(props: { token: string; id: string }): Promise<void>
+  hasAcquireTokens(namespace: string): Promise<boolean>
+  matchAcquireToken(params: { token: string; namespace: string }): Promise<boolean>
+  setAcquireToken(params: { token: string; namespace: string }): Promise<void>
+  unsetAcquireToken(params: { token: string; namespace: string }): Promise<void>
 }
 
 interface ITokenPolicyDAO {
-  getAllIdsWithTokenPolicies(): Promise<string[]>
-  getTokenPolicies(id: string): Promise<{
+  getAllNamespacesWithTokenPolicies(): Promise<string[]>
+  getTokenPolicies(namespace: string): Promise<{
     acquireTokenRequired: boolean | null
   }>
 
-  setAcquireTokenRequired(id: string, val: boolean): Promise<void>
-  unsetAcquireTokenRequired(id: string): Promise<void>
+  setAcquireTokenRequired(namespace: string, val: boolean): Promise<void>
+  unsetAcquireTokenRequired(namespace: string): Promise<void>
 }
 
 interface IAccessControlDAO extends

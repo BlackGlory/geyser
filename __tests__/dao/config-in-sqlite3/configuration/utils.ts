@@ -2,7 +2,7 @@ import { MapNullablePropsToOptionalProps } from 'hotypes'
 import { getDatabase } from '@dao/config-in-sqlite3/database'
 
 interface IRawConfiguration {
-  geyser_id: string
+  namespace: string
   duration: number | null
   limit: number | null
 }
@@ -10,12 +10,12 @@ interface IRawConfiguration {
 export function setRawConfiguration<T extends IRawConfiguration>(item: T): T {
   getDatabase().prepare(`
     INSERT INTO geyser_configuration (
-      geyser_id
+      namespace
     , duration
     , "limit"
     )
     VALUES (
-      $geyser_id
+      $namespace
     , $duration
     , $limit
     );
@@ -26,20 +26,20 @@ export function setRawConfiguration<T extends IRawConfiguration>(item: T): T {
 
 export function setMinimalConfiguration(item: MapNullablePropsToOptionalProps<IRawConfiguration>): IRawConfiguration {
   return setRawConfiguration({
-    geyser_id: item.geyser_id
+    namespace: item.namespace
   , duration: item.duration ?? null
   , limit: item.limit ?? null
   })
 }
 
-export function hasRawConfiguration(id: string): boolean {
-  return !!getRawConfiguration(id)
+export function hasRawConfiguration(namespace: string): boolean {
+  return !!getRawConfiguration(namespace)
 }
 
-export function getRawConfiguration(id: string): IRawConfiguration | null {
+export function getRawConfiguration(namespace: string): IRawConfiguration | null {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_configuration
-     WHERE geyser_id = $id;
-  `).get({ id })
+     WHERE namespace = $namespace;
+  `).get({ namespace })
 }

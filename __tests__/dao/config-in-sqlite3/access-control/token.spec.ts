@@ -9,31 +9,31 @@ beforeEach(initializeDatabases)
 afterEach(clearDatabases)
 
 describe('token-based access control', () => {
-  describe('getAllIdsWithTokens(): string[]', () => {
+  describe('getAllNamespacesWithTokens(): string[]', () => {
     it('return string[]', () => {
-      const id = 'id'
+      const namespace = 'namespace'
       setRawToken({
         token: 'token'
-      , geyser_id: id
+      , namespace: namespace
       , acquire_permission: 1
       })
 
-      const result = DAO.getAllIdsWithTokens()
+      const result = DAO.getAllNamespacesWithTokens()
 
-      expect(result).toEqual([id])
+      expect(result).toEqual([namespace])
     })
   })
 
-  describe('getAllTokens(id: string): TokenInfo[]', () => {
+  describe('getAllTokens(namespace: string): TokenInfo[]', () => {
     it('return TokenInfo[]', () => {
-      const id = 'id'
+      const namespace = 'namespace'
       const token = setRawToken({
         token: 'token'
-      , geyser_id: id
+      , namespace: namespace
       , acquire_permission: 1
       })
 
-      const result = DAO.getAllTokens(id)
+      const result = DAO.getAllTokens(namespace)
 
       expect(result).toEqual([
         {
@@ -45,17 +45,17 @@ describe('token-based access control', () => {
   })
 
   describe('AcquireToken', () => {
-    describe('hasAcquireTokens(id: string): boolean', () => {
+    describe('hasAcquireTokens(namespace: string): boolean', () => {
       describe('tokens exist', () => {
         it('return true', () => {
-          const id = 'id'
+          const namespace = 'namespace'
           setRawToken({
             token: 'token'
-          , geyser_id: id
+          , namespace: namespace
           , acquire_permission: 1
           })
 
-          const result = DAO.hasAcquireTokens(id)
+          const result = DAO.hasAcquireTokens(namespace)
 
           expect(result).toBeTrue()
         })
@@ -63,27 +63,27 @@ describe('token-based access control', () => {
 
       describe('tokens do not exist', () => {
         it('return false', () => {
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const result = DAO.hasAcquireTokens(id)
+          const result = DAO.hasAcquireTokens(namespace)
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('matchAcquireToken({ token: string; id: string }): boolean', () => {
+    describe('matchAcquireToken({ token: string; namespace: string }): boolean', () => {
       describe('token exist', () => {
         it('return true', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
           setRawToken({
             token
-          , geyser_id: id
+          , namespace: namespace
           , acquire_permission: 1
           })
 
-          const result = DAO.matchAcquireToken({ token, id })
+          const result = DAO.matchAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeTrue()
         })
@@ -92,28 +92,28 @@ describe('token-based access control', () => {
       describe('token does not exist', () => {
         it('return false', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const result = DAO.matchAcquireToken({ token, id })
+          const result = DAO.matchAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeFalse()
         })
       })
     })
 
-    describe('setAcquireToken({ token: string; id: string })', () => {
+    describe('setAcquireToken({ token: string; namespace: string })', () => {
       describe('token exists', () => {
         it('update row', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
           setRawToken({
             token
-          , geyser_id: id
+          , namespace: namespace
           , acquire_permission: 1
           })
 
-          const result = DAO.setAcquireToken({ token, id })
-          const row = getRawToken(token, id)
+          const result = DAO.setAcquireToken({ token, namespace: namespace })
+          const row = getRawToken(token, namespace)
 
           expect(result).toBeUndefined()
           expect(row).not.toBeNull()
@@ -124,10 +124,10 @@ describe('token-based access control', () => {
       describe('token does not exist', () => {
         it('insert row', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const result = DAO.setAcquireToken({ token, id })
-          const row = getRawToken(token, id)
+          const result = DAO.setAcquireToken({ token, namespace: namespace })
+          const row = getRawToken(token, namespace)
 
           expect(result).toBeUndefined()
           expect(row).not.toBeNull()
@@ -136,33 +136,33 @@ describe('token-based access control', () => {
       })
     })
 
-    describe('unsetAcquireToken({ token: string; id: string })', () => {
+    describe('unsetAcquireToken({ token: string; namespace: string })', () => {
       describe('token exists', () => {
         it('return undefined', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
           setRawToken({
             token
-          , geyser_id: id
+          , namespace: namespace
           , acquire_permission: 1
           })
 
-          const result = DAO.unsetAcquireToken({ token, id })
+          const result = DAO.unsetAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeUndefined()
-          expect(hasRawToken(token, id)).toBeFalse()
+          expect(hasRawToken(token, namespace)).toBeFalse()
         })
       })
 
       describe('token does not exist', () => {
         it('return undefined', () => {
           const token = 'token'
-          const id = 'id'
+          const namespace = 'namespace'
 
-          const result = DAO.unsetAcquireToken({ token, id })
+          const result = DAO.unsetAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeUndefined()
-          expect(hasRawToken(token, id)).toBeFalse()
+          expect(hasRawToken(token, namespace)).toBeFalse()
         })
       })
     })

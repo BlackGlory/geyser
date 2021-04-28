@@ -1,6 +1,6 @@
 import { Geyser } from './geyser'
 
-type IGeyserMap = { [id: string]: Geyser }
+type IGeyserMap = { [namespace: string]: Geyser }
 
 let map: IGeyserMap = createGeyserMap()
 

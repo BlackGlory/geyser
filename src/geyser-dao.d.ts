@@ -1,18 +1,18 @@
 type IGeyserConfig = import('hotypes').MapNullablePropsToNonNullableProps<IConfiguration>
 
 interface IGeyserDAO {
-  create(id: string, config: IGeyserConfig): Promise<void>
+  create(namespace: string, config: IGeyserConfig): Promise<void>
 
   /**
    * @throws {GeyserNotExist}
    */
-  update(id: string, config: IGeyserConfig): Promise<void>
+  update(namespace: string, config: IGeyserConfig): Promise<void>
 
   /**
    * @throws {AbortError}
    * @throws {GeyserNotExist}
    */
-  acquire(id: string, abortSignal: AbortSignal): Promise<void>
+  acquire(namespace: string, abortSignal: AbortSignal): Promise<void>
 
   nextTick(): Promise<void>
 

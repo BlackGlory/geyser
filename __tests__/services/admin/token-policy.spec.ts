@@ -57,15 +57,15 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('GET /admin/geyser/:id/token-policies', () => {
+  describe('GET /admin/geyser/:namespace/token-policies', () => {
     describe('auth', () => {
       it('200', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies`)
+        , pathname(`/admin/geyser/${namespace}/token-policies`)
         , headers(createAuthHeaders())
         ))
 
@@ -86,11 +86,11 @@ describe('TokenPolicy', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies`)
+        , pathname(`/admin/geyser/${namespace}/token-policies`)
         ))
 
         expect(res.status).toBe(401)
@@ -100,11 +100,11 @@ describe('TokenPolicy', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(get(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies`)
+        , pathname(`/admin/geyser/${namespace}/token-policies`)
         , headers(createAuthHeaders('bad'))
         ))
 
@@ -113,16 +113,16 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('PUT /admin/geyser/:id/token-policies/acquire-token-required', () => {
+  describe('PUT /admin/geyser/:namespace/token-policies/acquire-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = true
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         , headers(createAuthHeaders())
         , json(val)
         ))
@@ -133,12 +133,12 @@ describe('TokenPolicy', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
         const val = true
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         , json(val)
         ))
 
@@ -149,12 +149,12 @@ describe('TokenPolicy', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
         const val = true
 
         const res = await fetch(put(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         , headers(createAuthHeaders('bad'))
         , json(val)
         ))
@@ -164,15 +164,15 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('DELETE /admin/geyser/:id/token-policies/acquire-token-required', () => {
+  describe('DELETE /admin/geyser/:namespace/token-policies/acquire-token-required', () => {
     describe('auth', () => {
       it('204', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         , headers(createAuthHeaders())
         ))
 
@@ -182,11 +182,11 @@ describe('TokenPolicy', () => {
 
     describe('no admin password', () => {
       it('401', async () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         ))
 
         expect(res.status).toBe(401)
@@ -196,11 +196,11 @@ describe('TokenPolicy', () => {
     describe('bad auth', () => {
       it('401', async () => {
         process.env.GEYSER_ADMIN_PASSWORD = 'password'
-        const id = 'id'
+        const namespace = 'namespace'
 
         const res = await fetch(del(
           url(getAddress())
-        , pathname(`/admin/geyser/${id}/token-policies/acquire-token-required`)
+        , pathname(`/admin/geyser/${namespace}/token-policies/acquire-token-required`)
         , headers(createAuthHeaders('bad'))
         ))
 

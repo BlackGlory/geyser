@@ -1,13 +1,13 @@
 import { FastifyPluginAsync } from 'fastify'
-import { idSchema, tokenSchema } from '@src/schema'
+import { namespaceSchema, tokenSchema } from '@src/schema'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
-  // get all ids
-  server.get<{ Params: { id: string }}>(
+  // get all namespaces
+  server.get<{ Params: { namespace: string }}>(
     '/geyser-with-tokens'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           200: {
             type: 'array'
@@ -17,19 +17,19 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const result = await Core.TBAC.Token.getAllIds()
+      const result = await Core.TBAC.Token.getAllNamespaces()
       reply.send(result)
     }
   )
 
   // get all tokens
   server.get<{
-    Params: { id: string }
+    Params: { namespace: string }
   }>(
-    '/geyser/:id/tokens'
+    '/geyser/:namespace/tokens'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           200: {
             type: 'array'
@@ -45,22 +45,22 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      const result = await Core.TBAC.Token.getAll(id)
+      const namespace = req.params.namespace
+      const result = await Core.TBAC.Token.getAll(namespace)
       reply.send(result)
     }
   )
 
   // acquire token
   server.put<{
-    Params: { token: string, id: string }
+    Params: { token: string, namespace: string }
   }>(
-    '/geyser/:id/tokens/:token/acquire'
+    '/geyser/:namespace/tokens/:token/acquire'
   , {
       schema: {
         params: {
           token: tokenSchema
-        , id: idSchema
+        , namespace: namespaceSchema
         }
       , response: {
           204: { type: 'null' }
@@ -68,22 +68,22 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const token = req.params.token
-      await Core.TBAC.Token.setAcquireToken(id, token)
+      await Core.TBAC.Token.setAcquireToken(namespace, token)
       reply.status(204).send()
     }
   )
 
   server.delete<{
-    Params: { token: string, id: string }
+    Params: { token: string, namespace: string }
   }>(
-    '/geyser/:id/tokens/:token/acquire'
+    '/geyser/:namespace/tokens/:token/acquire'
   , {
       schema: {
         params: {
           token: tokenSchema
-        , id: idSchema
+        , namespace: namespaceSchema
         }
       , response: {
           204: { type: 'null' }
@@ -91,9 +91,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const token = req.params.token
-      await Core.TBAC.Token.unsetAcquireToken(id, token)
+      await Core.TBAC.Token.unsetAcquireToken(namespace, token)
       reply.status(204).send()
     }
   )

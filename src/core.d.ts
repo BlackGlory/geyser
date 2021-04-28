@@ -13,46 +13,46 @@ interface ICore {
     /**
      * @throws {AbortSignal}
      */
-    acquire(id: string, abortSignal: AbortSignal): Promise<void>
-    updateConfig(id: string): Promise<void>
+    acquire(namespace: string, abortSignal: AbortSignal): Promise<void>
+    updateConfig(namespace: string): Promise<void>
     nextTick(): Promise<void>
 
     AbortError: CustomErrorConstructor
   }
 
   Configuration: {
-    getAllIds(): Promise<string[]>
-    get(id: string): Promise<>
+    getAllNamespaces(): Promise<string[]>
+    get(namespace: string): Promise<>
 
-    setDuration(geyserId: string, val: number): Promise<void>
-    unsetDuration(geyserId: string): Promise<void>
+    setDuration(namespace: string, val: number): Promise<void>
+    unsetDuration(namespace: string): Promise<void>
 
-    setLimit(geyserId: string, val: number): Promise<void>
-    unsetLimit(geyserId: string): Promise<void>
+    setLimit(namespace: string, val: number): Promise<void>
+    unsetLimit(namespace: string): Promise<void>
   }
 
   Blacklist: {
     isEnabled(): boolean
-    isBlocked(id: string): Promise<boolean>
+    isBlocked(namespace: string): Promise<boolean>
     getAll(): Promise<string[]>
-    add(id: string): Promise<void>
-    remove(id: string): Promise<void>
+    add(namespace: string): Promise<void>
+    remove(namespace: string): Promise<void>
 
     /**
      * @throws {Forbidden}
      */
-    check(id: string): Promise<void>
+    check(namespace: string): Promise<void>
 
     Forbidden: CustomErrorConstructor
   }
 
   Whitelist: {
     isEnabled(): boolean
-    isBlocked(id: string): Promise<boolean>
-    check(id: string): Promise<void>
+    isBlocked(namespace: string): Promise<boolean>
+    check(namespace: string): Promise<void>
     getAll(): Promise<string[]>
-    add(id: string): Promise<void>
-    remove(id: string): Promise<void>
+    add(namespace: string): Promise<void>
+    remove(namespace: string): Promise<void>
 
     /**
      * @throws {Forbidden}
@@ -66,29 +66,29 @@ interface ICore {
     /**
      * @throws {Unauthorized}
      */
-    checkAcquirePermission(id: string, token?: string): Promise<void>
+    checkAcquirePermission(namespace: string, token?: string): Promise<void>
 
     Unauthorized: CustomErrorConstructor
 
     Token: {
-      getAllIds(): Promise<string[]>
-      getAll(id: string): Promise<Array<{
+      getAllNamespaces(): Promise<string[]>
+      getAll(namespace: string): Promise<Array<{
         token: string
         acquire: boolean
       }>>
 
-      setAcquireToken(id: string, token: string): Promise<void>
-      unsetAcquireToken(id: string, token: string): Promise<void>
+      setAcquireToken(namespace: string, token: string): Promise<void>
+      unsetAcquireToken(namespace: string, token: string): Promise<void>
     }
 
     TokenPolicy: {
-      getAllIds(): Promise<string[]>
-      get(id: string): Promise<{
+      getAllNamespaces(): Promise<string[]>
+      get(namespace: string): Promise<{
         acquireTokenRequired: boolean | null
       }>
 
-      setAcquireTokenRequired(id: string, val: boolean): Promise<void>
-      unsetAcquireTokenRequired(id: string): Promise<void>
+      setAcquireTokenRequired(namespace: string, val: boolean): Promise<void>
+      unsetAcquireTokenRequired(namespace: string): Promise<void>
     }
   }
 }

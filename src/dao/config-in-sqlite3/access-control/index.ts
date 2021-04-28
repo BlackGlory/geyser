@@ -18,7 +18,7 @@ const WhitelistDAO: IWhitelistDAO = {
 }
 
 const TokenDAO: ITokenDAO = {
-  getAllIdsWithTokens: asyncify(Token.getAllIdsWithTokens)
+  getAllNamespacesWithTokens: asyncify(Token.getAllNamespacesWithTokens)
 , getAllTokens: asyncify(Token.getAllTokens)
 
 , hasAcquireTokens: asyncify(Token.hasAcquireTokens)
@@ -28,7 +28,7 @@ const TokenDAO: ITokenDAO = {
 }
 
 const TokenPolicyDAO: ITokenPolicyDAO = {
-  getAllIdsWithTokenPolicies: asyncify(TokenPolicy.getAllIdsWithTokenPolicies)
+  getAllNamespacesWithTokenPolicies: asyncify(TokenPolicy.getAllNamespacesWithTokenPolicies)
 , getTokenPolicies: asyncify(TokenPolicy.getTokenPolicies)
 
 , setAcquireTokenRequired: asyncify(TokenPolicy.setAcquireTokenRequired)

@@ -9,30 +9,30 @@ beforeEach(initializeDatabases)
 afterEach(clearDatabases)
 
 describe('TokenPolicy', () => {
-  describe('getAllIdsWithTokenPolicies(): string[]', () => {
+  describe('getAllNamespacesWithTokenPolicies(): string[]', () => {
     it('return string[]', () => {
-      const id = 'id'
+      const namespace = 'namespace'
       setRawTokenPolicy({
-        geyser_id: id
+        namespace: namespace
       , acquire_token_required: 1
       })
 
-      const result = DAO.getAllIdsWithTokenPolicies()
+      const result = DAO.getAllNamespacesWithTokenPolicies()
 
-      expect(result).toEqual([id])
+      expect(result).toEqual([namespace])
     })
   })
 
-  describe('getTokenPolicies(id: string): TokenPolicy', () => {
+  describe('getTokenPolicies(namespace: string): TokenPolicy', () => {
     describe('exists', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setRawTokenPolicy({
-          geyser_id: id
+          namespace: namespace
         , acquire_token_required: 1
         })
 
-        const result = DAO.getTokenPolicies(id)
+        const result = DAO.getTokenPolicies(namespace)
 
         expect(result).toEqual({
           acquireTokenRequired: true
@@ -42,9 +42,9 @@ describe('TokenPolicy', () => {
 
     describe('does not exist', () => {
       it('return', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.getTokenPolicies(id)
+        const result = DAO.getTokenPolicies(namespace)
 
         expect(result).toEqual({
           acquireTokenRequired: null
@@ -53,12 +53,12 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('setAcquireTokenRequired(id: string, val: boolean): void', () => {
+  describe('setAcquireTokenRequired(namespace: string, val: boolean): void', () => {
     it('return undefined', () => {
-      const id = 'id'
+      const namespace = 'namespace'
 
-      const result = DAO.setAcquireTokenRequired(id, true)
-      const row = getRawTokenPolicy(id)
+      const result = DAO.setAcquireTokenRequired(namespace, true)
+      const row = getRawTokenPolicy(namespace)
 
       expect(result).toBeUndefined()
       expect(row).not.toBeNull()
@@ -66,19 +66,19 @@ describe('TokenPolicy', () => {
     })
   })
 
-  describe('unsetAcquireTokenRequired(id: string): void', () => {
+  describe('unsetAcquireTokenRequired(namespace: string): void', () => {
     describe('exists', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
         setRawTokenPolicy({
-          geyser_id: id
+          namespace: namespace
         , consume_token_required: 1
         , acquire_token_required: 1
         , clear_token_required: 1
         })
 
-        const result = DAO.unsetAcquireTokenRequired(id)
-        const row = getRawTokenPolicy(id)
+        const result = DAO.unsetAcquireTokenRequired(namespace)
+        const row = getRawTokenPolicy(namespace)
 
         expect(result).toBeUndefined()
         expect(row).not.toBeNull()
@@ -88,12 +88,12 @@ describe('TokenPolicy', () => {
 
     describe('does not exist', () => {
       it('return undefined', () => {
-        const id = 'id'
+        const namespace = 'namespace'
 
-        const result = DAO.unsetAcquireTokenRequired(id)
+        const result = DAO.unsetAcquireTokenRequired(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawTokenPolicy(id)).toBeFalse()
+        expect(hasRawTokenPolicy(namespace)).toBeFalse()
       })
     })
   })

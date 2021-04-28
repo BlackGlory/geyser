@@ -1,7 +1,7 @@
 import * as Configuration from './configuration'
 
 export const ConfigurationDAO: IConfigurationDAO = {
-  getAllIdsWithConfiguration: asyncify(Configuration.getAllIdsWithConfiguration)
+  getAllNamespacesWithConfiguration: asyncify(Configuration.getAllNamespacesWithConfiguration)
 , getConfiguration: asyncify(Configuration.getConfiguration)
 
 , setDuration: asyncify(Configuration.setDuration)

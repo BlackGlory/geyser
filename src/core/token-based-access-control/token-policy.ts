@@ -1,19 +1,19 @@
 import { AccessControlDAO } from '@dao'
 
-export function getAllIds(): Promise<string[]> {
-  return AccessControlDAO.getAllIdsWithTokenPolicies()
+export function getAllNamespaces(): Promise<string[]> {
+  return AccessControlDAO.getAllNamespacesWithTokenPolicies()
 }
 
-export function get(id: string): Promise<{
+export function get(namespace: string): Promise<{
   acquireTokenRequired: boolean | null
 }> {
-  return AccessControlDAO.getTokenPolicies(id)
+  return AccessControlDAO.getTokenPolicies(namespace)
 }
 
-export function setAcquireTokenRequired(id: string, val: boolean): Promise<void> {
-  return AccessControlDAO.setAcquireTokenRequired(id, val)
+export function setAcquireTokenRequired(namespace: string, val: boolean): Promise<void> {
+  return AccessControlDAO.setAcquireTokenRequired(namespace, val)
 }
 
-export function unsetAcquireTokenRequired(id: string): Promise<void> {
-  return AccessControlDAO.unsetAcquireTokenRequired(id)
+export function unsetAcquireTokenRequired(namespace: string): Promise<void> {
+  return AccessControlDAO.unsetAcquireTokenRequired(namespace)
 }

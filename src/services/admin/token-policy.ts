@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify'
-import { idSchema } from '@src/schema'
+import { namespaceSchema } from '@src/schema'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.get(
@@ -15,18 +15,18 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const result = await Core.TBAC.TokenPolicy.getAllIds()
+      const result = await Core.TBAC.TokenPolicy.getAllNamespaces()
       reply.send(result)
     }
   )
 
   server.get<{
-    Params: { id: string }
+    Params: { namespace: string }
   }>(
-    '/geyser/:id/token-policies'
+    '/geyser/:namespace/token-policies'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           200: {
             acquireTokenRequired: {
@@ -40,20 +40,20 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      const result = await Core.TBAC.TokenPolicy.get(id)
+      const namespace = req.params.namespace
+      const result = await Core.TBAC.TokenPolicy.get(namespace)
       reply.send(result)
     }
   )
 
   server.put<{
-    Params: { id: string }
+    Params: { namespace: string }
   , Body: boolean
   }>(
-    '/geyser/:id/token-policies/acquire-token-required'
+    '/geyser/:namespace/token-policies/acquire-token-required'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , body: { type: 'boolean' }
       , response: {
           204: { type: 'null' }
@@ -61,28 +61,28 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
+      const namespace = req.params.namespace
       const val = req.body
-      await Core.TBAC.TokenPolicy.setAcquireTokenRequired(id, val)
+      await Core.TBAC.TokenPolicy.setAcquireTokenRequired(namespace, val)
       reply.status(204).send()
     }
   )
 
   server.delete<{
-    Params: { id: string}
+    Params: { namespace: string}
   }>(
-    '/geyser/:id/token-policies/acquire-token-required'
+    '/geyser/:namespace/token-policies/acquire-token-required'
   , {
       schema: {
-        params: { id: idSchema }
+        params: { namespace: namespaceSchema }
       , response: {
           204: { type: 'null' }
         }
       }
     }
   , async (req, reply) => {
-      const id = req.params.id
-      await Core.TBAC.TokenPolicy.unsetAcquireTokenRequired(id)
+      const namespace = req.params.namespace
+      await Core.TBAC.TokenPolicy.unsetAcquireTokenRequired(namespace)
       reply.status(204).send()
     }
   )
