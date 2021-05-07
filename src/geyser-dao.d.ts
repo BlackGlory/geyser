@@ -1,4 +1,4 @@
-type IGeyserConfig = import('hotypes').MapNullablePropsToNonNullableProps<IConfiguration>
+type IGeyserConfig = import('hotypes').MapPropsToNonNullable<IConfiguration>
 
 interface IGeyserDAO {
   create(namespace: string, config: IGeyserConfig): Promise<void>
