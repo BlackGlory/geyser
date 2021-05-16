@@ -42,7 +42,7 @@ export class Geyser {
     }
 
     while (this.queue.size && this.isntFull()) {
-      const signal = this.queue.dequeue()
+      const signal = this.queue.dequeue()!
       signal.emit()
     }
   }
