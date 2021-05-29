@@ -1,7 +1,7 @@
 import { nextTick } from '@core/geyser'
 import { AbortError, withAbortSignal } from 'extra-promise'
 import { setDynamicTimeoutLoop } from 'extra-timers'
-import ms = require('ms')
+import ms from 'ms'
 
 export function callNextTickEverySecond(abortSignal: AbortSignal): void {
   const cancel = setDynamicTimeoutLoop(ms('1s'), async () => {
