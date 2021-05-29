@@ -27,7 +27,7 @@ describe('GeyserDAO', () => {
 
     expect(time2 - time1).toBeLessThanOrEqual(100)
     expect(time3 - time1).toBeGreaterThanOrEqual(1000)
-  }, 10000) // for CI
+  }, 30000) // for CI
 
   test('update config', async () => {
     const namespace = 'namespace'
