@@ -5,6 +5,8 @@ import { setTimeout, setImmediate } from 'extra-timers'
 import { getErrorPromise } from 'return-style'
 import 'jest-extended'
 
+const ERROR = 1
+
 afterEach(resetGeyserMap)
 
 describe('GeyserDAO', () => {
@@ -21,13 +23,13 @@ describe('GeyserDAO', () => {
 
     const controller2 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
-    setTimeout(1000, GeyserDAO.nextTick)
+    setTimeout(1000 + ERROR, GeyserDAO.nextTick)
     await GeyserDAO.acquire(namespace, controller2.signal)
     const time3 = getTimestamp()
 
     expect(time2 - time1).toBeLessThanOrEqual(100)
     expect(time3 - time1).toBeGreaterThanOrEqual(1000)
-  }, 30000) // for CI
+  })
 
   test('update config', async () => {
     const namespace = 'namespace'
@@ -42,7 +44,7 @@ describe('GeyserDAO', () => {
 
     const controller2 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
-    setTimeout(500, async () => {
+    setTimeout(500 + ERROR, async () => {
       await GeyserDAO.update(namespace, {
         duration
       , limit: limit + 1
@@ -75,7 +77,7 @@ describe('GeyserDAO', () => {
 
     const controller3 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
-    setTimeout(1000, GeyserDAO.nextTick)
+    setTimeout(1000 + ERROR, GeyserDAO.nextTick)
     await GeyserDAO.acquire(namespace, controller3.signal)
     const time2 = getTimestamp()
 
