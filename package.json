@@ -21,7 +21,7 @@
     "start:pm2": "cross-env NODE_ENV=production pm2 start lib/index.js --name 'geyser' --wait-ready",
     "start:http2": "cross-env NODE_ENV=production GEYSER_HTTP2=true node lib/index.js",
     "docker:build": "docker build --tag geyser .",
-    "docker:test": "docker-compose --file docker-compose.test.yml run --rm sut",
+    "docker:test": "docker-compose --file docker-compose.test.yml run --rm test",
     "release": "standard-version"
   },
   "husky": {
