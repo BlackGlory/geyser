@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/BlackGlory/geyser/compare/v0.2.0...v0.2.1) (2021-06-21)
+
+
+### Features
+
+* add /health ([3a05cdd](https://github.com/BlackGlory/geyser/commit/3a05cdd8177d94544dd9bb17c1ce846991ac1baf))
+
+
+### Bug Fixes
+
+* docker build ([91579a2](https://github.com/BlackGlory/geyser/commit/91579a2773519bdc27bcd618193d5c6244e80192))
+* scripts ([28ec985](https://github.com/BlackGlory/geyser/commit/28ec9857c2fe2d3c93390d2d4857dec2cb8a4a07))
+
 ## 0.2.0 (2021-04-28)
 
 
