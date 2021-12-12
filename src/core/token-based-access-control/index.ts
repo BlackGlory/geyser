@@ -18,19 +18,19 @@ export const TBAC: ICore['TBAC'] = {
 , Token
 }
 
-function isEnabled() {
+function isEnabled(): boolean {
   return TOKEN_BASED_ACCESS_CONTROL()
 }
 
 /**
  * @throws {Unauthorized}
  */
-async function checkAcquirePermission(namespace: string, token?: string) {
+async function checkAcquirePermission(namespace: string, token?: string): Promise<void> {
   if (!isEnabled()) return
 
   const acquireTokenRequired =
-    (await TokenPolicy.get(namespace)).acquireTokenRequired
-  ?? ACQUIRE_TOKEN_REQUIRED()
+    (await TokenPolicy.get(namespace)).acquireTokenRequired ??
+    ACQUIRE_TOKEN_REQUIRED()
 
   if (acquireTokenRequired) {
     if (!token) throw new Unauthorized()
