@@ -1,5 +1,6 @@
 import { Queue } from '@blackglory/structures'
-import { Signal, withAbortSignal } from 'extra-promise'
+import { Signal } from 'extra-promise'
+import { withAbortSignal } from 'extra-abort'
 
 export class Geyser {
   cycleStartTime: number = Date.now()
@@ -65,4 +66,4 @@ export class Geyser {
   }
 }
 
-export { AbortError } from 'extra-promise'
+export { AbortError } from 'extra-abort'
