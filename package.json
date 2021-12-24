@@ -51,7 +51,7 @@
     "extra-fetch": "^1.8.4",
     "extra-request": "^4.0.1",
     "extra-response": "^0.3.8",
-    "husky": "4",
+    "husky": "7",
     "jest": "^27.4.5",
     "jest-extended": "^1.2.0",
     "jest-json-schema": "^6.0.0",
