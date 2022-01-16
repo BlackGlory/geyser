@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/BlackGlory/geyser/compare/v0.2.5...v0.2.6) (2022-01-16)
+
+
+### Features
+
+* add accept-version support ([2ad5edf](https://github.com/BlackGlory/geyser/commit/2ad5edfe0237edb2b113afab7c040a8cd35ddb45))
+* add cache-control header ([f57955f](https://github.com/BlackGlory/geyser/commit/f57955fb243e976ed51dd179fd7e488e4dee328e))
+
+
+### Bug Fixes
+
+* **docker:** build ([8c632d2](https://github.com/BlackGlory/geyser/commit/8c632d2ae53b0bc20a49a177f0dbc84eee110b30))
+* **docker:** healthcheck ([368baf9](https://github.com/BlackGlory/geyser/commit/368baf98b1727901cb954dcb403b65b5e7c58c76))
+
 ### [0.2.5](https://github.com/BlackGlory/geyser/compare/v0.2.4...v0.2.5) (2021-10-14)
 
 ### [0.2.4](https://github.com/BlackGlory/geyser/compare/v0.2.3...v0.2.4) (2021-07-13)
