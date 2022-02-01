@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/BlackGlory/geyser/compare/v0.2.6...v0.2.7) (2022-02-01)
+
+
+### Features
+
+* add resetCycle service ([ae59b69](https://github.com/BlackGlory/geyser/commit/ae59b69f2b7ba582601cfc92a4f199f86ade8edf))
+* **dao:** add resetCycle ([4f3f33e](https://github.com/BlackGlory/geyser/commit/4f3f33e54e89998f946b5f3cabe3d2c7b5bc1032))
+
 ### [0.2.6](https://github.com/BlackGlory/geyser/compare/v0.2.5...v0.2.6) (2022-01-16)
 
 
