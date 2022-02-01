@@ -6,7 +6,12 @@ interface IGeyserDAO {
   /**
    * @throws {GeyserNotExist}
    */
-  update(namespace: string, config: IGeyserConfig): Promise<void>
+  updateConfig(namespace: string, config: IGeyserConfig): Promise<void>
+
+  /**
+   * @throws {GeyserNotExist}
+   */
+  resetCycle(namespace: string): Promise<void>
 
   /**
    * @throws {AbortError}

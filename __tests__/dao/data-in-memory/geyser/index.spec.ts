@@ -17,14 +17,12 @@ describe('GeyserDAO', () => {
     await GeyserDAO.create(namespace, { duration, limit })
 
     const time1 = getTimestamp()
-    const controller1 = new AbortController()
-    await GeyserDAO.acquire(namespace, controller1.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
     const time2 = getTimestamp()
 
-    const controller2 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
     setTimeout(1000 + ERROR, GeyserDAO.nextTick)
-    await GeyserDAO.acquire(namespace, controller2.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
     const time3 = getTimestamp()
 
     expect(time2 - time1).toBeLessThanOrEqual(100)
@@ -38,24 +36,42 @@ describe('GeyserDAO', () => {
     await GeyserDAO.create(namespace, { duration, limit })
 
     const time1 = getTimestamp()
-    const controller1 = new AbortController()
-    await GeyserDAO.acquire(namespace, controller1.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
     const time2 = getTimestamp()
 
-    const controller2 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
     setTimeout(500 + ERROR, async () => {
-      await GeyserDAO.update(namespace, {
+      await GeyserDAO.updateConfig(namespace, {
         duration
       , limit: limit + 1
       })
       await GeyserDAO.nextTick()
     })
-    await GeyserDAO.acquire(namespace, controller2.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
     const time3 = getTimestamp()
 
     expect(time2 - time1).toBeLessThanOrEqual(100)
     expect(time3 - time1).toBeWithin(500, 1000)
+  })
+
+  test('reset cycle', async () => {
+    const namespace = 'namespace'
+    const duration = 1000
+    const limit = 1
+    await GeyserDAO.create(namespace, { duration, limit })
+
+    const time1 = getTimestamp()
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
+    GeyserDAO.resetCycle(namespace)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
+    const time2 = getTimestamp()
+    setImmediate(GeyserDAO.nextTick)
+    setTimeout(1000 + ERROR, GeyserDAO.nextTick)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
+    const time3 = getTimestamp()
+
+    expect(time2 - time1).toBeLessThan(100)
+    expect(time3 - time1).toBeGreaterThanOrEqual(1000)
   })
 
   test('abort acquire', async () => {
@@ -65,20 +81,18 @@ describe('GeyserDAO', () => {
     await GeyserDAO.create(namespace, { duration, limit })
 
     const time1 = getTimestamp()
-    const controller1 = new AbortController()
-    await GeyserDAO.acquire(namespace, controller1.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
 
-    const controller2 = new AbortController()
+    const controller = new AbortController()
     setImmediate(async () => {
-      controller2.abort()
+      controller.abort()
       await GeyserDAO.nextTick()
     })
-    const err = await getErrorPromise(GeyserDAO.acquire(namespace, controller2.signal))
+    const err = await getErrorPromise(GeyserDAO.acquire(namespace, controller.signal))
 
-    const controller3 = new AbortController()
     setImmediate(GeyserDAO.nextTick)
     setTimeout(1000 + ERROR, GeyserDAO.nextTick)
-    await GeyserDAO.acquire(namespace, controller3.signal)
+    await GeyserDAO.acquire(namespace, new AbortController().signal)
     const time2 = getTimestamp()
 
     expect(err).toBeInstanceOf(GeyserDAO.AbortError)

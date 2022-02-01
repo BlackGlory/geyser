@@ -22,7 +22,7 @@ export async function updateConfig(namespace: string): Promise<void> {
   const config = await createConfig(namespace)
 
   try {
-    await GeyserDAO.update(namespace, config)
+    await GeyserDAO.updateConfig(namespace, config)
   } catch (e) {
     if (e instanceof GeyserDAO.GeyserNotExist) return
     throw e

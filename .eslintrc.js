@@ -10,6 +10,7 @@ module.exports = {
   ]
 , rules: {
     'no-constant-condition': 'off'
+  , 'no-cond-assign': 'off'
   , '@typescript-eslint/ban-ts-comment': 'off'
   , '@typescript-eslint/ban-types': 'off'
   , '@typescript-eslint/no-inferrable-types': 'off'

@@ -1,11 +1,12 @@
 import { Queue } from '@blackglory/structures'
 import { Signal } from 'extra-promise'
-import { withAbortSignal } from 'extra-abort'
+import { withAbortSignal, raceAbortSignals, AbortController } from 'extra-abort'
 
 export class Geyser {
   cycleStartTime: number = Date.now()
-  count: number = 0
-  queue: Queue<Signal> = new Queue()
+  acquired: number = 0
+  acquireSignals: Queue<Signal> = new Queue()
+  acquireControllers: Queue<AbortController> = new Queue()
 
   duration!: number
   limit!: number
@@ -19,31 +20,47 @@ export class Geyser {
     this.duration = config.duration
   }
 
+  resetCycle(): void {
+    this.cycleStartTime = Date.now()
+    this.acquired = 0
+
+    let controller: AbortController | undefined
+    while (controller = this.acquireControllers.dequeue()) {
+      controller.abort()
+    }
+  }
+
   /**
    * @throws {AbortError}
    */
   async acquire(abortSignal: AbortSignal): Promise<void> {
     if (this.isFull()) {
       const signal = new Signal()
-      this.queue.enqueue(signal)
+      const controller = new AbortController()
+      this.acquireControllers.enqueue(controller)
+      this.acquireSignals.enqueue(signal)
       try {
-        await withAbortSignal(abortSignal, () => signal)
+        await withAbortSignal(
+          raceAbortSignals([abortSignal, controller.signal])
+        , async () => await signal
+        )
       } finally {
-        this.queue.remove(signal)
+        this.acquireSignals.remove(signal)
+        this.acquireControllers.remove(controller)
       }
     }
-    this.count++
+    this.acquired++
   }
 
-  nextTick() {
+  nextTick(): void {
     const now = Date.now()
     if (this.isCycleOver(now)) {
       this.cycleStartTime = now
-      this.count = 0
+      this.acquired = 0
     }
 
-    while (this.queue.size && this.isntFull()) {
-      const signal = this.queue.dequeue()!
+    while (this.acquireSignals.size && this.isntFull()) {
+      const signal = this.acquireSignals.dequeue()!
       signal.emit()
     }
   }
@@ -53,16 +70,16 @@ export class Geyser {
   }
 
   isFull(): boolean {
-    return this.count === this.limit
+    return this.acquired === this.limit
   }
 
   isntFull(): boolean {
-    return this.count < this.limit
+    return this.acquired < this.limit
   }
 
   isIdle(): boolean {
-    return this.queue.size === 0
-        && this.count === 0
+    return this.acquireSignals.size === 0
+        && this.acquired === 0
   }
 }
 
