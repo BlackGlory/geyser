@@ -11,10 +11,11 @@ interface ICore {
 
   Geyser: {
     /**
-     * @throws {AbortSignal}
+     * @throws {AbortError}
      */
     acquire(namespace: string, abortSignal: AbortSignal): Promise<void>
     updateConfig(namespace: string): Promise<void>
+    resetCycle(namespace: string): Promise<void>
     nextTick(): Promise<void>
 
     AbortError: CustomErrorConstructor

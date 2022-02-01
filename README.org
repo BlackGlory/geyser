@@ -225,6 +225,24 @@ await fetch(`http://localhost:8080/admin/geyser/${namespace}/config/duration`, {
 })
 #+END_SRC
 
+***** 重置周期
+=DELETE /admin/geyser/<namespace>/cycle=
+
+****** Example
+******* curl
+#+BEGIN_SRC sh
+curl \
+  --request DELETE \
+  --header "Authorization: Bearer $ADMIN_PASSWORD" \
+  "http://localhost:8080/admin/geyser/$namespace/cycle"
+#+END_SRC
+      
+******* fetch
+#+BEGIN_SRC js
+await fetch(`http://localhost:8080/admin/geyser/${namespace}/cycle`, {
+  method: 'DELETE'
+})
+#+END_SRC
 
 **** 访问控制
 GEYSER提供两种可以同时启用的访问控制策略.

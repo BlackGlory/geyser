@@ -5,6 +5,7 @@ import { routes as whitelistRoutes } from './whitelist'
 import { routes as tokenPolicyRoutes } from './token-policy'
 import { routes as tokenRoutes } from './token'
 import { routes as configurationRoutes } from './configuration'
+import { routes as cycleRoutes } from './cycle'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
   server.addContentTypeParser(
@@ -24,4 +25,5 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   server.register(tokenPolicyRoutes, { prefix: '/admin', Core })
   server.register(tokenRoutes, { prefix: '/admin', Core })
   server.register(configurationRoutes, { prefix: '/admin', Core })
+  server.register(cycleRoutes, { prefix: '/admin', Core })
 }

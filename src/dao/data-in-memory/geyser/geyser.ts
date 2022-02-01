@@ -4,7 +4,7 @@ import { withAbortSignal, raceAbortSignals, AbortController } from 'extra-abort'
 
 export class Geyser {
   cycleStartTime: number = Date.now()
-  acquired: number = 0
+  acquiredCount: number = 0
   acquireSignals: Queue<Signal> = new Queue()
   acquireControllers: Queue<AbortController> = new Queue()
 
@@ -22,7 +22,7 @@ export class Geyser {
 
   resetCycle(): void {
     this.cycleStartTime = Date.now()
-    this.acquired = 0
+    this.acquiredCount = 0
 
     let controller: AbortController | undefined
     while (controller = this.acquireControllers.dequeue()) {
@@ -49,14 +49,14 @@ export class Geyser {
         this.acquireControllers.remove(controller)
       }
     }
-    this.acquired++
+    this.acquiredCount++
   }
 
   nextTick(): void {
     const now = Date.now()
     if (this.isCycleOver(now)) {
       this.cycleStartTime = now
-      this.acquired = 0
+      this.acquiredCount = 0
     }
 
     while (this.acquireSignals.size && this.isntFull()) {
@@ -65,21 +65,21 @@ export class Geyser {
     }
   }
 
-  isCycleOver(timestamp: number) {
+  isCycleOver(timestamp: number): boolean {
     return timestamp - this.cycleStartTime > this.duration
   }
 
   isFull(): boolean {
-    return this.acquired === this.limit
+    return this.acquiredCount === this.limit
   }
 
   isntFull(): boolean {
-    return this.acquired < this.limit
+    return this.acquiredCount < this.limit
   }
 
   isIdle(): boolean {
     return this.acquireSignals.size === 0
-        && this.acquired === 0
+        && this.acquiredCount === 0
   }
 }
 

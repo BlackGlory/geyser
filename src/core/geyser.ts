@@ -2,6 +2,9 @@ import { GeyserDAO } from '@dao/data-in-memory/geyser'
 import { ConfigurationDAO } from '@dao'
 import { DURATION, LIMIT } from '@env'
 
+/**
+ * @throws {AbortError}
+ */
 export async function acquire(namespace: string, abortSignal: AbortSignal): Promise<void> {
   try {
     return await GeyserDAO.acquire(namespace, abortSignal)
@@ -29,6 +32,17 @@ export async function updateConfig(namespace: string): Promise<void> {
   }
 }
 
+export async function resetCycle(namespace: string): Promise<void> {
+  try {
+    await GeyserDAO.resetCycle(namespace)
+  } catch (e) {
+    if (e instanceof GeyserDAO.GeyserNotExist) return
+    throw e
+  }
+}
+
+export const AbortError = GeyserDAO.AbortError
+
 async function createConfig(namespace: string): Promise<IGeyserConfig> {
   const config = await ConfigurationDAO.getConfiguration(namespace)
   const duration = config.duration ?? DURATION()
@@ -36,5 +50,3 @@ async function createConfig(namespace: string): Promise<IGeyserConfig> {
 
   return { duration, limit }
 }
-
-export const AbortError = GeyserDAO.AbortError
