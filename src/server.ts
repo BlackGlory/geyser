@@ -27,11 +27,6 @@ export function buildServer() {
   , maxParamLength: 600
     /* @ts-ignore */
   , http2: HTTP2()
-  , ajv: {
-      customOptions: {
-        coerceTypes: false
-      }
-    }
   })
 
   server.addHook('onRequest', async (req, reply) => {

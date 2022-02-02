@@ -29,12 +29,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         params: { namespace: namespaceSchema }
       , response: {
           200: {
-            acquireTokenRequired: {
-              anyOf: [
-                { type: 'boolean' }
-              , { type: 'null' }
-              ]
-            }
+            acquireTokenRequired: { type: 'boolean', nullable: true }
           }
         }
       }

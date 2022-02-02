@@ -29,18 +29,8 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
         params: { namespace: namespaceSchema }
       , response: {
           200: {
-            duration: {
-              anyOf: [
-                { type: 'number' }
-              , { type: 'null' }
-              ]
-            }
-          , limit: {
-              anyOf: [
-                { type: 'number' }
-              , { type: 'null' }
-              ]
-            }
+            duration: { type: 'number', nullable: true }
+          , limit: { type: 'number', nullable: true }
           }
         }
       }
