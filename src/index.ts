@@ -1,5 +1,5 @@
 import { go } from '@blackglory/go'
-import { AbortController } from 'abort-controller'
+import { AbortController } from 'extra-abort'
 import * as ConfigInSqlite3 from '@src/dao/config-in-sqlite3/database'
 import { buildServer } from './server'
 import { PORT, HOST, CI } from '@env'
