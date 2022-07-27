@@ -28,6 +28,7 @@ git clone https://github.com/BlackGlory/geyser
 cd geyser
 yarn install
 yarn build
+yarn bundle
 yarn --silent start
 #+END_SRC
 
