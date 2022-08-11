@@ -1,38 +1,39 @@
 import { getDatabase } from '../database'
+import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
-export function getAllWhitelistItems(): string[] {
-  const result = getDatabase().prepare(`
+export const getAllWhitelistItems = withLazyStatic(function (): string[] {
+  const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_whitelist;
-  `).all()
+  `), [getDatabase()]).all()
 
   return result.map(x => x['namespace'])
-}
+})
 
-export function inWhitelist(namespace: string): boolean {
-  const result = getDatabase().prepare(`
+export const inWhitelist = withLazyStatic(function (namespace: string): boolean {
+  const result = lazyStatic(() => getDatabase().prepare(`
     SELECT EXISTS(
              SELECT 1
                FROM geyser_whitelist
               WHERE namespace = $namespace
            ) AS exist_in_whitelist;
-  `).get({ namespace: namespace })
+  `), [getDatabase()]).get({ namespace: namespace })
 
   return result['exist_in_whitelist'] === 1
-}
+})
 
-export function addWhitelistItem(namespace: string) {
-  getDatabase().prepare(`
+export const addWhitelistItem = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO geyser_whitelist (namespace)
     VALUES ($namespace)
         ON CONFLICT
         DO NOTHING;
-  `).run({ namespace: namespace })
-}
+  `), [getDatabase()]).run({ namespace: namespace })
+})
 
-export function removeWhitelistItem(namespace: string) {
-  getDatabase().prepare(`
+export const removeWhitelistItem = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().prepare(`
     DELETE FROM geyser_whitelist
      WHERE namespace = $namespace;
-  `).run({ namespace: namespace })
-}
+  `), [getDatabase()]).run({ namespace: namespace })
+})

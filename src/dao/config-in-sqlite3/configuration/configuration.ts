@@ -1,23 +1,25 @@
 import { getDatabase } from '../database'
+import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
-export function getAllNamespacesWithConfiguration(): string[] {
-  const result = getDatabase().prepare(`
+export const getAllNamespacesWithConfiguration = withLazyStatic(function (): string[] {
+  const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_configuration;
-  `).all()
-  return result.map(x => x['namespace'])
-}
+  `), [getDatabase()]).all()
 
-export function getConfiguration(namespace: string): IConfiguration {
+  return result.map(x => x['namespace'])
+})
+
+export const getConfiguration = withLazyStatic(function (namespace: string): IConfiguration {
   const row: {
     'duration': number | null
     'limit': number | null
-  } = getDatabase().prepare(`
+  } = lazyStatic(() => getDatabase().prepare(`
     SELECT duration
          , "limit"
       FROM geyser_configuration
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `), [getDatabase()]).get({ namespace })
 
   if (row) {
     return {
@@ -30,57 +32,55 @@ export function getConfiguration(namespace: string): IConfiguration {
     , limit: null
     }
   }
-}
+})
 
-export function setDuration(namespace: string, val: number): void {
-  getDatabase().prepare(`
+export const setDuration = withLazyStatic(function (namespace: string, val: number): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO geyser_configuration (namespace, duration)
     VALUES ($namespace, $duration)
         ON CONFLICT(namespace)
         DO UPDATE SET duration = $duration;
-  `).run({ namespace, duration: val })
-}
+  `), [getDatabase()]).run({ namespace, duration: val })
+})
 
-export function unsetDuration(namespace: string): void {
-  const db = getDatabase()
-  db.transaction(() => {
-    db.prepare(`
+export const unsetDuration = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().transaction((namespace: string) => {
+    lazyStatic(() => getDatabase().prepare(`
       UPDATE geyser_configuration
          SET duration = NULL
        WHERE namespace = $namespace;
-    `).run({ namespace })
+    `), [getDatabase()]).run({ namespace })
 
     deleteNoConfigurationsRow(namespace)
-  })()
-}
+  }), [getDatabase()])(namespace)
+})
 
-export function setLimit(namespace: string, val: number) {
-  getDatabase().prepare(`
+export const setLimit = withLazyStatic(function (namespace: string, val: number): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO geyser_configuration (namespace, "limit")
     VALUES ($namespace, $limit)
         ON CONFLICT(namespace)
         DO UPDATE SET "limit" = $limit;
-  `).run({ namespace, limit: val })
-}
+  `), [getDatabase()]).run({ namespace, limit: val })
+})
 
-export function unsetLimit(namespace: string): void {
-  const db = getDatabase()
-  db.transaction(() => {
-    db.prepare(`
+export const unsetLimit = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().transaction((namespace: string) => {
+    lazyStatic(() => getDatabase().prepare(`
       UPDATE geyser_configuration
          SET "limit" = NULL
        WHERE namespace = $namespace;
-    `).run({ namespace })
+    `), [getDatabase()]).run({ namespace })
 
     deleteNoConfigurationsRow(namespace)
-  })()
-}
+  }), [getDatabase()])(namespace)
+})
 
-function deleteNoConfigurationsRow(namespace: string): void {
-  getDatabase().prepare(`
+const deleteNoConfigurationsRow = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().prepare(`
     DELETE FROM geyser_configuration
      WHERE namespace = $namespace
        AND duration = NULL
        AND "limit" = NULL;
-  `).run({ namespace })
-}
+  `), [getDatabase()]).run({ namespace })
+})

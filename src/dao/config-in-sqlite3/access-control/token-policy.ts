@@ -1,21 +1,25 @@
 import { getDatabase } from '../database'
+import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
-export function getAllNamespacesWithTokenPolicies(): string[] {
-  const result = getDatabase().prepare(`
+export const getAllNamespacesWithTokenPolicies = withLazyStatic(function (): string[] {
+  const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_token_policy;
-  `).all()
-  return result.map(x => x['namespace'])
-}
+  `), [getDatabase()]).all()
 
-export function getTokenPolicies(namespace: string): { acquireTokenRequired: boolean | null } {
+  return result.map(x => x['namespace'])
+})
+
+export const getTokenPolicies = withLazyStatic(function (namespace: string): {
+  acquireTokenRequired: boolean | null
+} {
   const row: {
     'acquire_token_required': number | null
-  } = getDatabase().prepare(`
+  } = lazyStatic(() => getDatabase().prepare(`
     SELECT acquire_token_required
       FROM geyser_token_policy
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `), [getDatabase()]).get({ namespace })
 
   if (row) {
     const acquireTokenRequired = row['acquire_token_required']
@@ -29,37 +33,39 @@ export function getTokenPolicies(namespace: string): { acquireTokenRequired: boo
   } else {
     return { acquireTokenRequired: null }
   }
-}
+})
 
-export function setAcquireTokenRequired(namespace: string, val: boolean): void {
-  getDatabase().prepare(`
+export const setAcquireTokenRequired = withLazyStatic(function (
+  namespace: string
+, val: boolean
+): void {
+  lazyStatic(() => getDatabase().prepare(`
     INSERT INTO geyser_token_policy (namespace, acquire_token_required)
     VALUES ($namespace, $acquireTokenRequired)
         ON CONFLICT(namespace)
         DO UPDATE SET acquire_token_required = $acquireTokenRequired;
-  `).run({ namespace, acquireTokenRequired: booleanToNumber(val) })
-}
+  `), [getDatabase()]).run({ namespace, acquireTokenRequired: booleanToNumber(val) })
+})
 
-export function unsetAcquireTokenRequired(namespace: string): void {
-  const db = getDatabase()
-  db.transaction(() => {
-    db.prepare(`
+export const unsetAcquireTokenRequired = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().transaction((namespace: string) => {
+    lazyStatic(() => getDatabase().prepare(`
       UPDATE geyser_token_policy
          SET acquire_token_required = NULL
        WHERE namespace = $namespace;
-    `).run({ namespace })
+    `), [getDatabase()]).run({ namespace })
 
     deleteNoPoliciesRow(namespace)
-  })()
-}
+  }), [getDatabase()])(namespace)
+})
 
-function deleteNoPoliciesRow(namespace: string): void {
-  getDatabase().prepare(`
+const deleteNoPoliciesRow = withLazyStatic(function (namespace: string): void {
+  lazyStatic(() => getDatabase().prepare(`
     DELETE FROM geyser_token_policy
      WHERE namespace = $namespace
        AND acquire_token_required = NULL
-  `).run({ namespace })
-}
+  `), [getDatabase()]).run({ namespace })
+})
 
 function numberToBoolean(val: number): boolean {
   if (val === 0) {
