@@ -99,6 +99,7 @@
     "ms": "^2.1.3",
     "prom-client": "^14.0.1",
     "return-style": "^1.0.0",
-    "value-getter": "^0.2.4"
+    "value-getter": "^0.2.4",
+    "you-died": "^0.4.2"
   }
 }
