@@ -3,7 +3,6 @@ import { resetGeyserMap } from '@src/dao/data-in-memory/geyser/geyser-map'
 import { AbortController } from 'extra-abort'
 import { setTimeout, setImmediate } from 'extra-timers'
 import { getErrorPromise } from 'return-style'
-import 'jest-extended'
 
 const ERROR = 1
 
@@ -51,7 +50,8 @@ describe('GeyserDAO', () => {
     const time3 = getTimestamp()
 
     expect(time2 - time1).toBeLessThanOrEqual(100)
-    expect(time3 - time1).toBeWithin(500, 1000)
+    expect(time3 - time1).toBeGreaterThanOrEqual(500)
+    expect(time3 - time1).toBeLessThan(1000)
   })
 
   test('reset cycle', async () => {

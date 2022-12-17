@@ -1,7 +1,6 @@
 import * as DAO from '@dao/config-in-sqlite3/configuration/configuration'
 import { initializeDatabases, clearDatabases } from '@test/utils'
 import { setMinimalConfiguration, getRawConfiguration, hasRawConfiguration } from './utils'
-import 'jest-extended'
 
 jest.mock('@dao/config-in-sqlite3/database')
 
@@ -93,7 +92,7 @@ describe('Configuration', () => {
         const result = DAO.unsetDuration(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawConfiguration(namespace)).toBeFalse()
+        expect(hasRawConfiguration(namespace)).toBe(false)
       })
     })
   })
@@ -134,7 +133,7 @@ describe('Configuration', () => {
         const result = DAO.unsetLimit(namespace)
 
         expect(result).toBeUndefined()
-        expect(hasRawConfiguration(namespace)).toBeFalse()
+        expect(hasRawConfiguration(namespace)).toBe(false)
       })
     })
   })

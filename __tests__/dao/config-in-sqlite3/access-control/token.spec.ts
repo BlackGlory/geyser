@@ -1,7 +1,6 @@
 import * as DAO from '@dao/config-in-sqlite3/access-control/token'
 import { initializeDatabases, clearDatabases } from '@test/utils'
 import { getRawToken, hasRawToken, setRawToken } from './utils'
-import 'jest-extended'
 
 jest.mock('@dao/config-in-sqlite3/database')
 
@@ -57,7 +56,7 @@ describe('token-based access control', () => {
 
           const result = DAO.hasAcquireTokens(namespace)
 
-          expect(result).toBeTrue()
+          expect(result).toBe(true)
         })
       })
 
@@ -67,7 +66,7 @@ describe('token-based access control', () => {
 
           const result = DAO.hasAcquireTokens(namespace)
 
-          expect(result).toBeFalse()
+          expect(result).toBe(false)
         })
       })
     })
@@ -85,7 +84,7 @@ describe('token-based access control', () => {
 
           const result = DAO.matchAcquireToken({ token, namespace: namespace })
 
-          expect(result).toBeTrue()
+          expect(result).toBe(true)
         })
       })
 
@@ -96,7 +95,7 @@ describe('token-based access control', () => {
 
           const result = DAO.matchAcquireToken({ token, namespace: namespace })
 
-          expect(result).toBeFalse()
+          expect(result).toBe(false)
         })
       })
     })
@@ -150,7 +149,7 @@ describe('token-based access control', () => {
           const result = DAO.unsetAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeUndefined()
-          expect(hasRawToken(token, namespace)).toBeFalse()
+          expect(hasRawToken(token, namespace)).toBe(false)
         })
       })
 
@@ -162,7 +161,7 @@ describe('token-based access control', () => {
           const result = DAO.unsetAcquireToken({ token, namespace: namespace })
 
           expect(result).toBeUndefined()
-          expect(hasRawToken(token, namespace)).toBeFalse()
+          expect(hasRawToken(token, namespace)).toBe(false)
         })
       })
     })
