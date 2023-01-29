@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/BlackGlory/geyser/compare/v0.2.12...v0.3.0) (2023-01-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* - The `Accept-Version` header is semver now.
+- Removed `/metrics`.
+- Removed HTTP2 support.
+
+* upgrade dependencies ([14c7dbf](https://github.com/BlackGlory/geyser/commit/14c7dbf2782bd70d77726e0d2f9b0601bcf7c98e))
+
 ### [0.2.12](https://github.com/BlackGlory/geyser/compare/v0.2.11...v0.2.12) (2022-09-07)
 
 ### [0.2.11](https://github.com/BlackGlory/geyser/compare/v0.2.10...v0.2.11) (2022-08-11)
