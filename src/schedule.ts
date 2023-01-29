@@ -1,4 +1,4 @@
-import { nextTick } from '@core/geyser'
+import { nextTick } from '@core/geyser.js'
 import { AbortError, withAbortSignal } from 'extra-abort'
 import { setDynamicTimeoutLoop } from 'extra-timers'
 import ms from 'ms'

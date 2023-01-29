@@ -1,11 +1,11 @@
 import { Queue } from '@blackglory/structures'
-import { Signal } from 'extra-promise'
+import { Deferred } from 'extra-promise'
 import { withAbortSignal, raceAbortSignals, AbortController } from 'extra-abort'
 
 export class Geyser {
   cycleStartTime: number = Date.now()
   acquiredCount: number = 0
-  acquireSignals: Queue<Signal> = new Queue()
+  acquireSignals: Queue<Deferred<void>> = new Queue()
   acquireControllers: Queue<AbortController> = new Queue()
 
   duration!: number
@@ -35,7 +35,7 @@ export class Geyser {
    */
   async acquire(abortSignal: AbortSignal): Promise<void> {
     if (this.isFull()) {
-      const signal = new Signal()
+      const signal = new Deferred<void>()
       const controller = new AbortController()
       this.acquireControllers.enqueue(controller)
       this.acquireSignals.enqueue(signal)
@@ -61,7 +61,7 @@ export class Geyser {
 
     while (this.acquireSignals.size && this.isntFull()) {
       const signal = this.acquireSignals.dequeue()!
-      signal.emit()
+      signal.resolve()
     }
   }
 

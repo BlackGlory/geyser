@@ -1,4 +1,4 @@
-import { getGeyserMap } from './geyser-map'
+import { getGeyserMap } from './geyser-map.js'
 
 export async function nextTick(): Promise<void> {
   const geysers = Object.values(getGeyserMap())

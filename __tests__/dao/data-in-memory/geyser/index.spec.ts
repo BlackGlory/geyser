@@ -1,5 +1,5 @@
-import { GeyserDAO } from '@src/dao/data-in-memory/geyser'
-import { resetGeyserMap } from '@src/dao/data-in-memory/geyser/geyser-map'
+import { GeyserDAO } from '@src/dao/data-in-memory/geyser/index.js'
+import { resetGeyserMap } from '@src/dao/data-in-memory/geyser/geyser-map.js'
 import { AbortController } from 'extra-abort'
 import { setTimeout, setImmediate } from 'extra-timers'
 import { getErrorPromise } from 'return-style'

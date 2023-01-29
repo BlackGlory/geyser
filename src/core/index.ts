@@ -1,9 +1,9 @@
-import { isAdmin } from './admin'
-import * as Geyser from './geyser'
-import * as Blacklist from './blacklist'
-import * as Whitelist from './whitelist'
-import * as Configuration from './configuration'
-import { TBAC } from './token-based-access-control'
+import { isAdmin } from './admin.js'
+import * as Geyser from './geyser.js'
+import * as Blacklist from './blacklist.js'
+import * as Whitelist from './whitelist.js'
+import * as Configuration from './configuration.js'
+import { TBAC } from './token-based-access-control/index.js'
 
 export const Core: ICore = {
   isAdmin

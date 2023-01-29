@@ -1,10 +1,10 @@
-import { AbortError } from './geyser'
-import { GeyserNotExist } from './errors'
-import { create } from './create'
-import { acquire } from './acquire'
-import { nextTick } from './next-tick'
-import { updateConfig } from './update-config'
-import { resetCycle } from './reset-cycle'
+import { AbortError } from './geyser.js'
+import { GeyserNotExist } from './errors.js'
+import { create } from './create.js'
+import { acquire } from './acquire.js'
+import { nextTick } from './next-tick.js'
+import { updateConfig } from './update-config.js'
+import { resetCycle } from './reset-cycle.js'
 
 export const GeyserDAO: IGeyserDAO = {
   AbortError

@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify'
-import { namespaceSchema, tokenSchema } from '@src/schema'
+import { namespaceSchema, tokenSchema } from '@src/schema.js'
 import { AbortController } from 'extra-abort'
 
 export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
@@ -36,7 +36,9 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
 
       await Core.Geyser.acquire(namespace, controller.signal)
-      reply.status(204).send()
+      return reply
+        .status(204)
+        .send()
     }
   )
 }

@@ -1,4 +1,4 @@
-type Json = import('@blackglory/types').Json
+type JSONValue = import('justypes').JSONValue
 type CustomErrorConstructor = import('@blackglory/errors').CustomErrorConstructor
 
 interface IConfiguration {

@@ -1,5 +1,5 @@
-import { getGeyserMap } from './geyser-map'
-import { Geyser } from './geyser'
+import { getGeyserMap } from './geyser-map.js'
+import { Geyser } from './geyser.js'
 
 export async function create(namespace: string, config: IGeyserConfig): Promise<void> {
   const map = getGeyserMap()

@@ -1,5 +1,5 @@
-import { ConfigurationDAO } from '@dao/config-in-sqlite3/configuration'
-import { updateConfig } from './geyser'
+import { ConfigurationDAO } from '@dao/config-in-sqlite3/configuration/index.js'
+import { updateConfig } from './geyser.js'
 
 export function getAllNamespaces(): Promise<string[]> {
   return ConfigurationDAO.getAllNamespacesWithConfiguration()

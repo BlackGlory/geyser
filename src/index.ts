@@ -1,9 +1,9 @@
-import { go } from '@blackglory/go'
+import { go } from '@blackglory/prelude'
 import { AbortController } from 'extra-abort'
-import * as ConfigInSqlite3 from '@src/dao/config-in-sqlite3/database'
-import { buildServer } from './server'
-import { PORT, HOST, NODE_ENV, NodeEnv } from '@env'
-import { callNextTickEverySecond } from './schedule'
+import * as ConfigInSqlite3 from '@src/dao/config-in-sqlite3/database.js'
+import { buildServer } from './server.js'
+import { PORT, HOST, NODE_ENV, NodeEnv } from '@env/index.js'
+import { callNextTickEverySecond } from './schedule.js'
 import { youDied } from 'you-died'
 
 go(async () => {
@@ -12,7 +12,10 @@ go(async () => {
   await ConfigInSqlite3.prepareDatabase()
 
   const server = buildServer()
-  await server.listen(PORT(), HOST())
+  await server.listen({
+    host: HOST()
+  , port: PORT()
+  })
   if (NODE_ENV() === NodeEnv.Test) process.exit()
 
   const tickLoopController = new AbortController()

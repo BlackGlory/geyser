@@ -1,5 +1,5 @@
-import { getGeyserMap } from './geyser-map'
-import { GeyserNotExist } from './errors'
+import { getGeyserMap } from './geyser-map.js'
+import { GeyserNotExist } from './errors.js'
 
 /**
  * @throws {GeyserNotExist}

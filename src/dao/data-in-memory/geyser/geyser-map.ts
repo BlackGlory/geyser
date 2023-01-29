@@ -1,4 +1,4 @@
-import { Geyser } from './geyser'
+import { Geyser } from './geyser.js'
 
 type IGeyserMap = { [namespace: string]: Geyser }
 

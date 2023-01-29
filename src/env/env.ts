@@ -1,8 +1,8 @@
 import { ValueGetter } from 'value-getter'
-import { isNumber } from '@blackglory/types'
+import { isNumber } from '@blackglory/prelude'
 import { Getter } from 'justypes'
-import { getCache } from '@env/cache'
-import { path as appRoot } from 'app-root-path'
+import { getCache } from '@env/cache.js'
+import { getAppRoot } from '@src/utils.js'
 import * as path from 'path'
 
 export enum ListBasedAccessControl {
@@ -31,7 +31,7 @@ export const NODE_ENV: Getter<NodeEnv | undefined> =
 
 export const DATA: Getter<string> =
   env('GEYSER_DATA')
-    .default(path.join(appRoot, 'data'))
+    .default(path.join(getAppRoot(), 'data'))
     .memoize(getCache)
     .get()
 
@@ -45,13 +45,6 @@ export const PORT: Getter<number> =
   env('GEYSER_PORT')
     .convert(toInteger)
     .default(8080)
-    .memoize(getCache)
-    .get()
-
-export const HTTP2: Getter<boolean> =
-  env('GEYSER_HTTP2')
-    .convert(toBool)
-    .default(false)
     .memoize(getCache)
     .get()
 
