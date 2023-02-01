@@ -5,7 +5,8 @@ export const getAllWhitelistItems = withLazyStatic(function (): string[] {
   const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_whitelist;
-  `), [getDatabase()]).all()
+  `), [getDatabase()])
+    .all() as Array<{ namespace: string }>
 
   return result.map(x => x['namespace'])
 })
@@ -17,7 +18,8 @@ export const inWhitelist = withLazyStatic(function (namespace: string): boolean 
                FROM geyser_whitelist
               WHERE namespace = $namespace
            ) AS exist_in_whitelist;
-  `), [getDatabase()]).get({ namespace: namespace })
+  `), [getDatabase()])
+    .get({ namespace }) as { exist_in_whitelist: 1 | 0 }
 
   return result['exist_in_whitelist'] === 1
 })

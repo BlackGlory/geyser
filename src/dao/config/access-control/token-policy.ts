@@ -2,24 +2,24 @@ import { getDatabase } from '../database.js'
 import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
 export const getAllNamespacesWithTokenPolicies = withLazyStatic(function (): string[] {
-  const result = lazyStatic(() => getDatabase().prepare(`
+  const rows = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_token_policy;
-  `), [getDatabase()]).all()
+  `), [getDatabase()])
+    .all() as Array<{ namespace: string }>
 
-  return result.map(x => x['namespace'])
+  return rows.map(x => x['namespace'])
 })
 
 export const getTokenPolicies = withLazyStatic(function (namespace: string): {
   acquireTokenRequired: boolean | null
 } {
-  const row: {
-    'acquire_token_required': number | null
-  } = lazyStatic(() => getDatabase().prepare(`
+  const row = lazyStatic(() => getDatabase().prepare(`
     SELECT acquire_token_required
       FROM geyser_token_policy
      WHERE namespace = $namespace;
-  `), [getDatabase()]).get({ namespace })
+  `), [getDatabase()])
+    .get({ namespace }) as { acquire_token_required: 1 | 0 | null } | undefined
 
   if (row) {
     const acquireTokenRequired = row['acquire_token_required']

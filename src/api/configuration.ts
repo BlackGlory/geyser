@@ -10,22 +10,22 @@ export function get(namespace: string): IConfiguration {
   return ConfigurationDAO.getConfiguration(namespace)
 }
 
-export async function setDuration(namespace: string, val: number): Promise<void> {
+export function setDuration(namespace: string, val: number): void {
   ConfigurationDAO.setDuration(namespace, val)
-  await updateConfig(namespace)
+  updateConfig(namespace)
 }
 
-export async function unsetDuration(namespace: string): Promise<void> {
+export function unsetDuration(namespace: string): void {
   ConfigurationDAO.unsetDuration(namespace)
-  await updateConfig(namespace)
+  updateConfig(namespace)
 }
 
-export async function setLimit(namespace: string, val: number): Promise<void> {
+export function setLimit(namespace: string, val: number): void {
   ConfigurationDAO.setLimit(namespace, val)
-  await updateConfig(namespace)
+  updateConfig(namespace)
 }
 
-export async function unsetLimit(namespace: string): Promise<void> {
+export function unsetLimit(namespace: string): void {
   ConfigurationDAO.unsetLimit(namespace)
-  await updateConfig(namespace)
+  updateConfig(namespace)
 }

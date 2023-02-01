@@ -2,28 +2,30 @@ import { getDatabase } from '../database.js'
 import { withLazyStatic, lazyStatic } from 'extra-lazy'
 
 export const getAllNamespacesWithTokens = withLazyStatic(function (): string[] {
-  const result = lazyStatic(() => getDatabase().prepare(`
+  const rows = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_token;
-  `), [getDatabase()]).all()
+  `), [getDatabase()])
+    .all() as Array<{ namespace: string }>
 
-  return result.map(x => x['namespace'])
+  return rows.map(x => x['namespace'])
 })
 
 export const getAllTokens = withLazyStatic(function (
   namespace: string
 ): Array<{ token: string, acquire: boolean }> {
-  const result: Array<{
-    token: string
-    'acquire_permission': number
-  }> = lazyStatic(() => getDatabase().prepare(`
+  const rows = lazyStatic(() => getDatabase().prepare(`
     SELECT token
          , acquire_permission
       FROM geyser_token
      WHERE namespace = $namespace;
-  `), [getDatabase()]).all({ namespace })
+  `), [getDatabase()])
+    .all({ namespace }) as Array<{
+      token: string
+      acquire_permission: number
+    }>
 
-  return result.map(x => ({
+  return rows.map(x => ({
     token: x['token']
   , acquire: x['acquire_permission'] === 1
   }))
@@ -37,7 +39,8 @@ export const hasAcquireTokens = withLazyStatic(function (namespace: string): boo
               WHERE namespace = $namespace
                 AND acquire_permission = 1
            ) AS acquire_tokens_exist
-  `), [getDatabase()]).get({ namespace })
+  `), [getDatabase()])
+    .get({ namespace }) as { acquire_tokens_exist: 1 | 0 }
 
   return result['acquire_tokens_exist'] === 1
 })
@@ -46,7 +49,7 @@ export const matchAcquireToken = withLazyStatic(function ({ token, namespace }: 
   token: string
   namespace: string
 }): boolean {
-  const result = lazyStatic(() => getDatabase().prepare(`
+  const row = lazyStatic(() => getDatabase().prepare(`
     SELECT EXISTS(
              SELECT 1
                FROM geyser_token
@@ -54,9 +57,10 @@ export const matchAcquireToken = withLazyStatic(function ({ token, namespace }: 
                 AND token = $token
                 AND acquire_permission = 1
            ) AS matched
-  `), [getDatabase()]).get({ token, namespace })
+  `), [getDatabase()])
+    .get({ token, namespace }) as { matched: 1 | 0 }
 
-  return result['matched'] === 1
+  return row['matched'] === 1
 })
 
 export const setAcquireToken = withLazyStatic(function ({ token, namespace }: {

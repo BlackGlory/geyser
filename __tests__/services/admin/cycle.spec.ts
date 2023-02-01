@@ -2,6 +2,7 @@ import { startService, stopService, getAddress } from '@test/utils.js'
 import { fetch } from 'extra-fetch'
 import { del } from 'extra-request'
 import { url, pathname, headers } from 'extra-request/transformers'
+import { createAuthHeaders } from './utils.js'
 
 beforeEach(startService)
 afterEach(stopService)
@@ -48,9 +49,3 @@ describe('Cycle', () => {
     })
   })
 })
-
-function createAuthHeaders(adminPassword?: string) {
-  return {
-    'Authorization': `Bearer ${ adminPassword ?? process.env.GEYSER_ADMIN_PASSWORD }`
-  }
-}

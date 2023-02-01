@@ -26,11 +26,11 @@ function isEnabled(): boolean {
 /**
  * @throws {Unauthorized}
  */
-async function checkAcquirePermission(namespace: string, token?: string): Promise<void> {
+function checkAcquirePermission(namespace: string, token?: string): void {
   if (!isEnabled()) return
 
   const acquireTokenRequired =
-    (await TokenPolicy.get(namespace)).acquireTokenRequired ??
+    (TokenPolicy.get(namespace)).acquireTokenRequired ??
     ACQUIRE_TOKEN_REQUIRED()
 
   if (acquireTokenRequired) {

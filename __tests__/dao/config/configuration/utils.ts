@@ -36,10 +36,10 @@ export function hasRawConfiguration(namespace: string): boolean {
   return !!getRawConfiguration(namespace)
 }
 
-export function getRawConfiguration(namespace: string): IRawConfiguration | null {
+export function getRawConfiguration(namespace: string): IRawConfiguration | undefined {
   return getDatabase().prepare(`
     SELECT *
       FROM geyser_configuration
      WHERE namespace = $namespace;
-  `).get({ namespace })
+  `).get({ namespace }) as IRawConfiguration | undefined
 }

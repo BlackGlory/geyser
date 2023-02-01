@@ -16,7 +16,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
       }
     }
   , async (req, reply) => {
-      const result = await api.Configuration.getAllNamespaces()
+      const result = api.Configuration.getAllNamespaces()
       return reply.send(result)
     }
   )
@@ -38,7 +38,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      const result = await api.Configuration.get(namespace)
+      const result = api.Configuration.get(namespace)
       return reply.send(result)
     }
   )
@@ -60,7 +60,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   , async (req, reply) => {
       const namespace = req.params.namespace
       const val = req.body
-      await api.Configuration.setDuration(namespace, val)
+      api.Configuration.setDuration(namespace, val)
       return reply
         .status(204)
         .send()
@@ -81,7 +81,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      await api.Configuration.unsetDuration(namespace)
+      api.Configuration.unsetDuration(namespace)
       return reply
         .status(204)
         .send()
@@ -105,7 +105,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   , async (req, reply) => {
       const namespace = req.params.namespace
       const val = req.body
-      await api.Configuration.setLimit(namespace, val)
+      api.Configuration.setLimit(namespace, val)
       return reply
         .status(204)
         .send()
@@ -126,7 +126,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      await api.Configuration.unsetLimit(namespace)
+      api.Configuration.unsetLimit(namespace)
       return reply
         .status(204)
         .send()

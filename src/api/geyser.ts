@@ -11,7 +11,7 @@ export async function acquire(namespace: string, abortSignal: AbortSignal): Prom
     return await GeyserDAO.acquire(namespace, abortSignal)
   } catch (e) {
     if (e instanceof GeyserDAO.GeyserNotExist) {
-      await GeyserDAO.create(namespace, await createConfig(namespace))
+      await GeyserDAO.create(namespace, createConfig(namespace))
       return await acquire(namespace, abortSignal)
     }
     throw e

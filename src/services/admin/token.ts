@@ -18,7 +18,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
       }
     }
   , async (req, reply) => {
-      const result = await api.TBAC.Token.getAllNamespaces()
+      const result = api.TBAC.Token.getAllNamespaces()
       return reply.send(result)
     }
   )
@@ -47,7 +47,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      const result = await api.TBAC.Token.getAll(namespace)
+      const result = api.TBAC.Token.getAll(namespace)
       return reply.send(result)
     }
   )
@@ -71,7 +71,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   , async (req, reply) => {
       const namespace = req.params.namespace
       const token = req.params.token
-      await api.TBAC.Token.setAcquireToken(namespace, token)
+      api.TBAC.Token.setAcquireToken(namespace, token)
       return reply
         .status(204)
         .send()
@@ -96,7 +96,7 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
   , async (req, reply) => {
       const namespace = req.params.namespace
       const token = req.params.token
-      await api.TBAC.Token.unsetAcquireToken(namespace, token)
+      api.TBAC.Token.unsetAcquireToken(namespace, token)
       return reply
         .status(204)
         .send()

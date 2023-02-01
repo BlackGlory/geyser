@@ -6,21 +6,23 @@ export const getAllNamespacesWithConfiguration = withLazyStatic(function (): str
   const result = lazyStatic(() => getDatabase().prepare(`
     SELECT namespace
       FROM geyser_configuration;
-  `), [getDatabase()]).all()
+  `), [getDatabase()])
+    .all() as Array<{ namespace: string }>
 
   return result.map(x => x['namespace'])
 })
 
 export const getConfiguration = withLazyStatic(function (namespace: string): IConfiguration {
-  const row: {
-    'duration': number | null
-    'limit': number | null
-  } = lazyStatic(() => getDatabase().prepare(`
+  const row = lazyStatic(() => getDatabase().prepare(`
     SELECT duration
          , "limit"
       FROM geyser_configuration
      WHERE namespace = $namespace;
-  `), [getDatabase()]).get({ namespace })
+  `), [getDatabase()])
+    .get({ namespace }) as {
+      'duration': number | null
+      'limit': number | null
+    } | undefined
 
   if (row) {
     return {
