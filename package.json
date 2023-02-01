@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "geyser",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "repository": "git@github.com:BlackGlory/geyser.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
   "license": "MIT",
