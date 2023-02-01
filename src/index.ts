@@ -1,6 +1,6 @@
 import { go } from '@blackglory/prelude'
 import { AbortController } from 'extra-abort'
-import * as ConfigInSqlite3 from '@src/dao/config-in-sqlite3/database.js'
+import * as ConfigInSqlite3 from '@src/dao/config/database.js'
 import { buildServer } from './server.js'
 import { PORT, HOST, NODE_ENV, NodeEnv } from '@env/index.js'
 import { callNextTickEverySecond } from './schedule.js'

@@ -17,8 +17,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           await prepareGeyser(namespace)
-          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
-          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
+          AccessControlDAO.TokenPolicy.setAcquireTokenRequired(namespace, true)
+          AccessControlDAO.Token.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
@@ -36,8 +36,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           await prepareGeyser(namespace)
-          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
-          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
+          AccessControlDAO.TokenPolicy.setAcquireTokenRequired(namespace, true)
+          AccessControlDAO.Token.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
@@ -55,8 +55,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           await prepareGeyser(namespace)
-          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
-          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
+          AccessControlDAO.TokenPolicy.setAcquireTokenRequired(namespace, true)
+          AccessControlDAO.Token.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
@@ -109,8 +109,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           await prepareGeyser(namespace)
-          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
-          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
+          AccessControlDAO.TokenPolicy.setAcquireTokenRequired(namespace, true)
+          AccessControlDAO.Token.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())
@@ -129,8 +129,8 @@ describe('token-based access control', () => {
           const namespace = 'namespace'
           const token = 'token'
           await prepareGeyser(namespace)
-          await AccessControlDAO.setAcquireTokenRequired(namespace, true)
-          await AccessControlDAO.setAcquireToken({ namespace: namespace, token })
+          AccessControlDAO.TokenPolicy.setAcquireTokenRequired(namespace, true)
+          AccessControlDAO.Token.setAcquireToken({ namespace: namespace, token })
 
           const res = await fetch(get(
             url(getAddress())

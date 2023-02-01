@@ -1,7 +1,8 @@
 import { FastifyPluginAsync } from 'fastify'
 import { namespaceSchema } from '@src/schema.js'
+import { IAPI } from '@api/contract.js'
 
-export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes(server, { Core }) {
+export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api }) => {
   server.get(
     '/geyser-with-config'
   , {
@@ -15,7 +16,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
       }
     }
   , async (req, reply) => {
-      const result = await Core.Configuration.getAllNamespaces()
+      const result = await api.Configuration.getAllNamespaces()
       return reply.send(result)
     }
   )
@@ -37,7 +38,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      const result = await Core.Configuration.get(namespace)
+      const result = await api.Configuration.get(namespace)
       return reply.send(result)
     }
   )
@@ -59,7 +60,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   , async (req, reply) => {
       const namespace = req.params.namespace
       const val = req.body
-      await Core.Configuration.setDuration(namespace, val)
+      await api.Configuration.setDuration(namespace, val)
       return reply
         .status(204)
         .send()
@@ -80,7 +81,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      await Core.Configuration.unsetDuration(namespace)
+      await api.Configuration.unsetDuration(namespace)
       return reply
         .status(204)
         .send()
@@ -104,7 +105,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
   , async (req, reply) => {
       const namespace = req.params.namespace
       const val = req.body
-      await Core.Configuration.setLimit(namespace, val)
+      await api.Configuration.setLimit(namespace, val)
       return reply
         .status(204)
         .send()
@@ -125,7 +126,7 @@ export const routes: FastifyPluginAsync<{ Core: ICore }> = async function routes
     }
   , async (req, reply) => {
       const namespace = req.params.namespace
-      await Core.Configuration.unsetLimit(namespace)
+      await api.Configuration.unsetLimit(namespace)
       return reply
         .status(204)
         .send()

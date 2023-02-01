@@ -15,7 +15,7 @@ describe('whitelist', () => {
         process.env.GEYSER_LIST_BASED_ACCESS_CONTROL = 'whitelist'
         const namespace = 'namespace'
         await prepareGeyser(namespace)
-        await AccessControlDAO.addWhitelistItem(namespace)
+        AccessControlDAO.Whitelist.addWhitelistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())

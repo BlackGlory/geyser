@@ -15,7 +15,7 @@ describe('blacklist', () => {
         process.env.GEYSER_LIST_BASED_ACCESS_CONTROL = 'blacklist'
         const namespace = 'namespace'
         await prepareGeyser(namespace)
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())
@@ -47,7 +47,7 @@ describe('blacklist', () => {
       it('204', async () => {
         const namespace = 'namespace'
         await prepareGeyser(namespace)
-        await AccessControlDAO.addBlacklistItem(namespace)
+        AccessControlDAO.Blacklist.addBlacklistItem(namespace)
 
         const res = await fetch(get(
           url(getAddress())
