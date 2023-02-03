@@ -1,9 +1,5 @@
 import { FastifyPluginAsync } from 'fastify'
 import bearerAuthPlugin from '@fastify/bearer-auth'
-import { routes as blacklistRoutes } from './blacklist.js'
-import { routes as whitelistRoutes } from './whitelist.js'
-import { routes as tokenPolicyRoutes } from './token-policy.js'
-import { routes as tokenRoutes } from './token.js'
 import { routes as configurationRoutes } from './configuration.js'
 import { routes as cycleRoutes } from './cycle.js'
 import { IAPI } from '@api/contract.js'
@@ -21,10 +17,6 @@ export const routes: FastifyPluginAsync<{ api: IAPI }> = async (server, { api })
     }
   })
 
-  await server.register(blacklistRoutes, { prefix: '/admin', api })
-  await server.register(whitelistRoutes, { prefix: '/admin', api })
-  await server.register(tokenPolicyRoutes, { prefix: '/admin', api })
-  await server.register(tokenRoutes, { prefix: '/admin', api })
   await server.register(configurationRoutes, { prefix: '/admin', api })
   await server.register(cycleRoutes, { prefix: '/admin', api })
 }

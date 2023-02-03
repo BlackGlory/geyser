@@ -53,32 +53,6 @@ export const ADMIN_PASSWORD: Getter<string | undefined> =
     .memoize(getCache)
     .get()
 
-export const LIST_BASED_ACCESS_CONTROL: Getter<ListBasedAccessControl> =
-  env('GEYSER_LIST_BASED_ACCESS_CONTROL')
-    .convert(val => {
-      switch (val) {
-        case 'whitelist': return ListBasedAccessControl.Whitelist
-        case 'blacklist': return ListBasedAccessControl.Blacklist
-        default: return ListBasedAccessControl.Disable
-      }
-    })
-    .memoize(getCache)
-    .get()
-
-export const TOKEN_BASED_ACCESS_CONTROL: Getter<boolean> =
-  env('GEYSER_TOKEN_BASED_ACCESS_CONTROL')
-    .convert(toBool)
-    .default(false)
-    .memoize(getCache)
-    .get()
-
-export const ACQUIRE_TOKEN_REQUIRED: Getter<boolean> =
-  env('GEYSER_ACQUIRE_TOKEN_REQUIRED')
-    .convert(toBool)
-    .default(false)
-    .memoize(getCache)
-    .get()
-
 export const DURATION: Getter<number> =
   env('GEYSER_DURATION')
     .convert(toInteger)

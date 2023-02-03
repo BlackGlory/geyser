@@ -40,9 +40,6 @@ function resetEnvironment(): void {
   // use `delete` to delete a property from `process.env`.
   // see also: https://nodejs.org/api/process.html#process_process_env
   delete process.env.GEYSER_ADMIN_PASSWORD
-  delete process.env.GEYSER_LIST_BASED_ACCESS_CONTROL
-  delete process.env.GEYSER_TOKEN_BASED_ACCESS_CONTROL
-  delete process.env.GEYSER_ACQUIRE_TOKEN_REQUIRED
   delete process.env.GEYSER_DURATION
   delete process.env.GEYSER_LIMIT
 

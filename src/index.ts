@@ -1,6 +1,6 @@
 import { go } from '@blackglory/prelude'
 import { AbortController } from 'extra-abort'
-import * as ConfigInSqlite3 from '@src/dao/config/database.js'
+import * as Config from '@src/dao/config/database.js'
 import { buildServer } from './server.js'
 import { PORT, HOST, NODE_ENV, NodeEnv } from '@env/index.js'
 import { callNextTickEverySecond } from './schedule.js'
@@ -8,9 +8,9 @@ import { youDied } from 'you-died'
 
 // eslint-disable-next-line
 go(async () => {
-  ConfigInSqlite3.openDatabase()
-  youDied(() => ConfigInSqlite3.closeDatabase())
-  await ConfigInSqlite3.prepareDatabase()
+  Config.openDatabase()
+  youDied(() => Config.closeDatabase())
+  await Config.prepareDatabase()
 
   const server = await buildServer()
   await server.listen({
