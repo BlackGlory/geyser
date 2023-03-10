@@ -13,6 +13,8 @@ import { jest } from '@jest/globals'
 import { getErrorAsync } from 'return-style'
 import { pass } from '@blackglory/prelude'
 
+const TIME_ERROR = 1
+
 beforeEach(startService)
 afterEach(stopService)
 
@@ -99,14 +101,16 @@ describe('acquireToken', () => {
         await acquireToken(id, new AbortController().signal)
         const oldCycleStartedAt = getRawRateLimiter(id)!.last_cycle_started_at!
 
-        const promise = fetch(post(
+        const startTime = Date.now()
+        const res = await fetch(post(
           url(getAddress())
         , pathname(`/rate-limiters/${id}/acquire`)
         ))
-        await delay(1100)
-        const res = await promise
+        const endTime = Date.now()
 
         expect(res.status).toBe(204)
+        expect(endTime - startTime).toBeGreaterThanOrEqual(1000 - TIME_ERROR)
+        expect(endTime - startTime).toBeLessThan(1500)
         const rawRateLimiter = getRawRateLimiter(id)!
         expect(rawRateLimiter).toStrictEqual({
           id
@@ -116,7 +120,10 @@ describe('acquireToken', () => {
           // eslint-disable-next-line
         , last_cycle_started_at: expect.any(Number)
         })
-        expect(rawRateLimiter.last_cycle_started_at!).toBeGreaterThan(oldCycleStartedAt)
+        const newCycleStartedAt = rawRateLimiter.last_cycle_started_at!
+        expect(newCycleStartedAt).toBeGreaterThan(oldCycleStartedAt)
+        expect(newCycleStartedAt - oldCycleStartedAt).toBeGreaterThanOrEqual(1000 - TIME_ERROR)
+        expect(newCycleStartedAt - oldCycleStartedAt).toBeLessThan(1500)
       })
 
       test('set rate limiter', async () => {

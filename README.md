@@ -80,7 +80,7 @@ await fetch('http://localhost:8080/rate-limiters')
 ```ts
 {
   duration: number | null // null表示Infinity
-  limit: number | null // null表示Infinity, 配置为null通常没有意义
+  limit: number | null // null表示Infinity, 配置为null或0通常没有意义
 }
 ```
 
@@ -105,7 +105,7 @@ await fetch(`http://localhost:8080/rate-limiters/${id}`)
 发送JSON:
 ```ts
 {
-  // 以秒为单位的时间周期, 由第一枚令牌分发时开始计算, 在指定秒数后进入下一周期.
+  // 以毫秒为单位的时间周期, 由第一枚令牌分发时开始计算, 在指定毫秒数后进入下一周期.
   // null表示Infinity.
   duration: number | null
 

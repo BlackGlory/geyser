@@ -3,7 +3,7 @@ PRAGMA journal_mode = WAL;
 
 CREATE TABLE geyser_rate_limiter (
   id                    VARCHAR(255) NOT NULL UNIQUE
-, duration              INTEGER -- 秒数
+, duration              INTEGER -- 一个周期的毫秒数
 , total_tokens          INTEGER
 , used_tokens           INTEGER      NOT NULL DEFAULT 0
 , last_cycle_started_at DATETIME -- 毫秒时间戳
