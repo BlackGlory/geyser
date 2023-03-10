@@ -2,14 +2,8 @@ import { ValueGetter } from 'value-getter'
 import { isNumber } from '@blackglory/prelude'
 import { Getter } from 'justypes'
 import { getCache } from '@env/cache.js'
-import { getAppRoot } from '@src/utils.js'
+import { getAppRoot } from '@utils/get-app-root.js'
 import * as path from 'path'
-
-export enum ListBasedAccessControl {
-  Disable
-, Whitelist
-, Blacklist
-}
 
 export enum NodeEnv {
   Test
@@ -48,32 +42,8 @@ export const PORT: Getter<number> =
     .memoize(getCache)
     .get()
 
-export const ADMIN_PASSWORD: Getter<string | undefined> =
-  env('GEYSER_ADMIN_PASSWORD')
-    .memoize(getCache)
-    .get()
-
-export const DURATION: Getter<number> =
-  env('GEYSER_DURATION')
-    .convert(toInteger)
-    .default(Infinity)
-    .memoize(getCache)
-    .get()
-
-export const LIMIT: Getter<number> =
-  env('GEYSER_LIMIT')
-    .convert(toInteger)
-    .default(0)
-    .memoize(getCache)
-    .get()
-
 function env(name: string): ValueGetter<string | undefined> {
   return new ValueGetter(name, () => process.env[name])
-}
-
-function toBool(val: string | boolean | undefined): boolean | undefined {
-  if (val) return val === 'true'
-  return false
 }
 
 function toInteger(val: string | number | undefined ): number | undefined {

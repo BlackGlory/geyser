@@ -1,16 +1,17 @@
 import { go } from '@blackglory/prelude'
-import { AbortController } from 'extra-abort'
-import * as Config from '@src/dao/config/database.js'
+import { closeDatabase, openDatabase, prepareDatabase } from '@src/database.js'
 import { buildServer } from './server.js'
 import { PORT, HOST, NODE_ENV, NodeEnv } from '@env/index.js'
-import { callNextTickEverySecond } from './schedule.js'
+import { startEnteredNextCycleEventScheduler } from './schedule.js'
 import { youDied } from 'you-died'
 
 // eslint-disable-next-line
 go(async () => {
-  Config.openDatabase()
-  youDied(() => Config.closeDatabase())
-  await Config.prepareDatabase()
+  openDatabase()
+  youDied(closeDatabase)
+  await prepareDatabase()
+
+  startEnteredNextCycleEventScheduler()
 
   const server = await buildServer()
   await server.listen({
@@ -18,10 +19,6 @@ go(async () => {
   , port: PORT()
   })
   if (NODE_ENV() === NodeEnv.Test) process.exit()
-
-  const tickLoopController = new AbortController()
-  callNextTickEverySecond(tickLoopController.signal)
-  youDied(() => tickLoopController.abort())
 
   process.send?.('ready')
 })

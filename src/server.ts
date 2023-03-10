@@ -1,25 +1,21 @@
 import { fastify } from 'fastify'
 import cors from '@fastify/cors'
 import { routes as geyser } from '@services/geyser/index.js'
-import { routes as admin } from '@services/admin/index.js'
 import { routes as robots } from '@services/robots/index.js'
 import { routes as health } from '@services/health/index.js'
 import { NODE_ENV, NodeEnv } from '@env/index.js'
-import { api } from '@api/index.js'
-import path from 'path'
-import { getAppRoot } from '@src/utils.js'
+import { API } from '@apis/index.js'
+import { getPackageFilename } from '@utils/get-package-filename.js'
 import { readJSONFileSync } from 'extra-filesystem'
 import { isntUndefined, isString } from '@blackglory/prelude'
 import { assert } from '@blackglory/errors'
 import semver from 'semver'
 
-const pkg = readJSONFileSync<{ version: string }>(
-  path.join(getAppRoot(), 'package.json')
-)
-
 type LoggerLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
 
 export async function buildServer() {
+  const pkg = readJSONFileSync<{ version: string }>(getPackageFilename())
+
   const server = fastify({
     logger: getLoggerOptions()
   , maxParamLength: 600
@@ -41,8 +37,7 @@ export async function buildServer() {
   })
 
   await server.register(cors, { origin: true })
-  await server.register(geyser, { api: api })
-  await server.register(admin, { api: api })
+  await server.register(geyser, { API })
   await server.register(robots)
   await server.register(health)
 

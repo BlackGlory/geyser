@@ -2,7 +2,7 @@ import { startService, stopService, getAddress } from '@test/utils.js'
 import { fetch } from 'extra-fetch'
 import { url, header, pathname } from 'extra-request/transformers'
 import { get } from 'extra-request'
-import { getAppRoot } from '@src/utils.js'
+import { getPackageFilename } from '@utils/get-package-filename.js'
 import { readJSONFile } from 'extra-filesystem'
 import path from 'path'
 
@@ -20,9 +20,7 @@ describe('global', () => {
 
   describe('request with accept-version', () => {
     it('accept-version match', async () => {
-      const pkg = await readJSONFile<{ version: string }>(
-        path.join(getAppRoot(), 'package.json')
-      )
+      const pkg = await readJSONFile<{ version: string }>(getPackageFilename())
       const res = await fetch(get(
         url(getAddress())
       , pathname('/health') // https://github.com/fastify/fastify/issues/3625

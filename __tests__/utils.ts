@@ -1,13 +1,12 @@
-import * as ConfigInSqlite3 from '@dao/config/database.js'
-import { resetGeyserMap } from '@dao/data/geyser/geyser-map.js'
+import { closeDatabase, openDatabase, prepareDatabase } from '@src/database.js'
 import { resetCache } from '@env/cache.js'
 import { buildServer } from '@src/server.js'
-import Ajv from 'ajv'
+import { startEnteredNextCycleEventScheduler } from '@src/schedule.js'
 import { UnpackedPromise } from 'hotypes'
 
-const ajv = new Ajv.default()
 let server: UnpackedPromise<ReturnType<typeof buildServer>>
 let address: string
+let stopEnteredNextCycleEventScheduler: ReturnType<typeof startEnteredNextCycleEventScheduler>
 
 export function getAddress(): string {
   return address
@@ -15,40 +14,28 @@ export function getAddress(): string {
 
 export async function startService(): Promise<void> {
   await initializeDatabases()
+  stopEnteredNextCycleEventScheduler = startEnteredNextCycleEventScheduler()
   server = await buildServer()
   address = await server.listen()
 }
 
 export async function stopService(): Promise<void> {
   await server.close()
+  stopEnteredNextCycleEventScheduler()
   clearDatabases()
-  resetGeyserMap()
   resetEnvironment()
 }
 
 export async function initializeDatabases(): Promise<void> {
-  ConfigInSqlite3.openDatabase()
-  await ConfigInSqlite3.prepareDatabase()
+  openDatabase()
+  await prepareDatabase()
 }
 
 export function clearDatabases(): void {
-  ConfigInSqlite3.closeDatabase()
+  closeDatabase()
 }
 
 function resetEnvironment(): void {
-  // assigning a property on `process.env` will implicitly convert the value to a string.
-  // use `delete` to delete a property from `process.env`.
-  // see also: https://nodejs.org/api/process.html#process_process_env
-  delete process.env.GEYSER_ADMIN_PASSWORD
-  delete process.env.GEYSER_DURATION
-  delete process.env.GEYSER_LIMIT
-
   // reset memoize
   resetCache()
-}
-
-export function expectMatchSchema(data: unknown, schema: object): void {
-  if (!ajv.validate(schema, data)) {
-    throw new Error(ajv.errorsText())
-  }
 }
