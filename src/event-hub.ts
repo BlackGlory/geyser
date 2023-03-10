@@ -5,25 +5,15 @@ export enum Event {
   Set
 , Reset
 , Removed
-, EnteredNextCycle
-}
-
-type GlobalEventToArgs = {
-  [Event.Set]: [id: string]
-  [Event.Reset]: [id: string]
-  [Event.Removed]: [id: string]
-  [Event.EnteredNextCycle]: [id: string]
 }
 
 type RateLimiterEventToArgs = {
   [Event.Set]: []
   [Event.Reset]: []
   [Event.Removed]: []
-  [Event.EnteredNextCycle]: []
 }
 
 class EventHub {
-  private globalEmitter = new Emitter<GlobalEventToArgs>()
   private idToEmitter: Map<string, Emitter<RateLimiterEventToArgs>> = new Map()
 
   async waitFor(
@@ -39,14 +29,7 @@ class EventHub {
     await waitForEmitter(emitter, event, abortSignal)
   }
 
-  onGlobal<T extends Event>(
-    event: T
-  , listener: (...args: GlobalEventToArgs[T]) => void
-  ): () => void {
-    return this.globalEmitter.on(event, listener)
-  }
-
-  onRateLimiter<T extends Event>(
+  on<T extends Event>(
     id: string
   , event: T
   , listener: (...args: RateLimiterEventToArgs[T]) => void
@@ -59,7 +42,7 @@ class EventHub {
     return emitter.on(event, listener)
   }
 
-  onceRateLimiter<T extends Event>(
+  once<T extends Event>(
     id: string
   , event: T
   , listener: (...args: RateLimiterEventToArgs[T]) => void
@@ -74,7 +57,6 @@ class EventHub {
 
   emit(id: string, event: Event): void {
     this.idToEmitter.get(id)?.emit(event)
-    this.globalEmitter.emit(event, id)
   }
 }
 
