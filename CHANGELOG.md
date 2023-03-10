@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/BlackGlory/geyser/compare/v0.3.2...v0.4.0) (2023-03-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* The APIs have been redesigned
+* Removed access control
+
+### Bug Fixes
+
+* seconds => milliseconds ([e7b40d1](https://github.com/BlackGlory/geyser/commit/e7b40d161c00ebb8368cc37e893bd53b83a7f017))
+
+
+* remove access control ([cb15ff3](https://github.com/BlackGlory/geyser/commit/cb15ff35aef0fe3590f7464af3647e31f44255fe))
+* the APIs have been redesigned ([8d2fa71](https://github.com/BlackGlory/geyser/commit/8d2fa71e6bcd1aadb732399c22978abaff667fc7))
+
 ### [0.3.2](https://github.com/BlackGlory/geyser/compare/v0.3.1...v0.3.2) (2023-02-02)
 
 ### [0.3.1](https://github.com/BlackGlory/geyser/compare/v0.3.0...v0.3.1) (2023-02-01)
