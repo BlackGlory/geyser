@@ -3,26 +3,30 @@ import { withLazyStatic, lazyStatic } from 'extra-lazy'
 import { RateLimiterNotFound } from '@src/errors.js'
 import { isNull, isPositiveInfinity } from '@blackglory/prelude'
 
+/**
+ * 表示获取令牌成功.
+ */
 export class Success {
   constructor(public readonly isFirstAcquireOfRateLimiter: boolean) {}
 }
+
+/**
+ * 表示在当前设置下不可能获取到令牌.
+ */
 export class Unreachable {}
+
+/**
+ * 表示可能在下个周期获取到令牌.
+ */
 export class WaitForNextCycle {
+  /**
+   * @param timeout 距离下一个周期的毫秒数.
+   */
   constructor(public readonly timeout: number) {}
 }
 
 /**
  * @throws {RateLimiterNotFound}
- * @returns
- * 返回Success的情况:
- * 表示获取令牌成功.
- * 
- * 返回Impossible的情况:
- * 表示获取令牌失败, 且在当前设置下不可能获取到令牌.
- * 
- * 返回Timestamp的情况:
- * 表示令牌获取失败, 但仍有可能在下个周期获取令牌, 返回的是本周期结束的时间戳.
- * 注意, 时间戳可能是`Infinity`, 这意味着本周期永远不会结束, 其含义相当于`false`.
  */
 export const tryAcquireToken = withLazyStatic((
   id: string
