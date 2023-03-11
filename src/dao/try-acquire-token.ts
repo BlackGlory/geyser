@@ -1,6 +1,6 @@
 import { getDatabase } from '@src/database.js'
 import { withLazyStatic, lazyStatic } from 'extra-lazy'
-import { RateLimiterNotFound } from '@src/errors.js'
+import { RateLimiterNotFound } from '@src/contract.js'
 import { isNull, isPositiveInfinity } from '@blackglory/prelude'
 
 /**

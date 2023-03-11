@@ -1,5 +1,5 @@
 import { resetRateLimiter as _resetRateLimiter } from '@dao/reset-rate-limiter.js'
-import { RateLimiterNotFound } from '@src/errors.js'
+import { RateLimiterNotFound } from '@src/contract.js'
 import { eventHub, Event } from '@src/event-hub.js'
 
 /**

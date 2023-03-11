@@ -1,4 +1,5 @@
 import { JSONObject } from 'justypes'
+import { CustomError } from '@blackglory/errors'
 
 export interface IRateLimiterConfiguration extends JSONObject {
   duration: number | null
@@ -24,3 +25,8 @@ export interface IAPI {
    */
   acquireToken(rateLimiterId: string, signal: AbortSignal): Promise<void>
 }
+
+/**
+ * 速率限制器在未经配置的情况下, 相当于不存在.
+ */
+export class RateLimiterNotFound extends CustomError {}
