@@ -132,7 +132,7 @@ await fetch(`http://localhost:8080/rate-limiters/${id}`, {
 , headers: {
     'Content-Type': 'application/json'
   }
-, body: JSON.stringify(unique)
+, body: JSON.stringify(payload)
 })
 ```
 
