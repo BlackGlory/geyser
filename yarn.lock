@@ -669,13 +669,6 @@
     ajv-formats "^2.1.1"
     fast-uri "^2.0.0"
 
-"@fastify/bearer-auth@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@fastify/bearer-auth/-/bearer-auth-9.0.0.tgz#9a75abcb1d54751dc04e97b37db5363e325c0f90"
-  integrity sha512-I1egwg1LRdIvhjL/P+3UEfyK7A3YTnN3goTyf8MJ+v7vVkwyyd8ieccFKI0SzEuxMmfQh/p4yNyLZWcMVwpInA==
-  dependencies:
-    fastify-plugin "^4.0.0"
-
 "@fastify/cors@^8.2.0":
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/@fastify/cors/-/cors-8.2.0.tgz#44ce6b28bc111e12679cb02f980f0ce865ff4877"
