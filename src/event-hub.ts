@@ -55,8 +55,12 @@ class EventHub {
     return emitter.once(event, listener)
   }
 
-  emit(id: string, event: Event): void {
-    this.idToEmitter.get(id)?.emit(event)
+  emit<T extends Event>(
+    id: string
+  , event: T
+  , ...args: RateLimiterEventToArgs[T]
+  ): void {
+    this.idToEmitter.get(id)?.emit(event, ...args)
   }
 }
 
