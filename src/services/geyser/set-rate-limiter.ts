@@ -1,11 +1,11 @@
 import { FastifyPluginAsync } from 'fastify'
 import { rateLimiterIdSchema } from '@src/schema.js'
-import { IAPI, IRateLimiterConfiguration } from '@src/contract.js'
+import { IAPI, IRateLimiterConfig } from '@src/contract.js'
 
 export const routes: FastifyPluginAsync<{ API: IAPI }> = async (server, { API }) => {
   server.put<{
     Params: { id: string }
-    Body: IRateLimiterConfiguration
+    Body: IRateLimiterConfig
   }>(
     '/rate-limiters/:id'
   , {

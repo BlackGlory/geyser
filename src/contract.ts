@@ -1,7 +1,7 @@
 import { JSONObject } from 'justypes'
 import { CustomError } from '@blackglory/errors'
 
-export interface IRateLimiterConfiguration extends JSONObject {
+export interface IRateLimiterConfig extends JSONObject {
   duration: number | null
   limit: number | null
 }
@@ -9,8 +9,8 @@ export interface IRateLimiterConfiguration extends JSONObject {
 export interface IAPI {
   getAllRateLimiterIds(): string[]
 
-  getRateLimiter(rateLimiterId: string): IRateLimiterConfiguration | null
-  setRateLimiter(rateLimiterId: string, config: IRateLimiterConfiguration): void
+  getRateLimiter(rateLimiterId: string): IRateLimiterConfig | null
+  setRateLimiter(rateLimiterId: string, config: IRateLimiterConfig): void
   removeRateLimiter(rateLimiterId: string): void
 
   /**

@@ -1,11 +1,11 @@
-import { IRateLimiterConfiguration } from '@src/contract.js'
+import { IRateLimiterConfig } from '@src/contract.js'
 import { setRateLimiterConfiguration } from '@dao/set-rate-limiter-configuration.js'
 import { resetRateLimiter } from '@dao/reset-rate-limiter.js'
 import { eventHub, Event } from '@src/event-hub.js'
 
 export function setRateLimiter(
   rateLimiterId: string
-, config: IRateLimiterConfiguration
+, config: IRateLimiterConfig
 ): void {
   setRateLimiterConfiguration(rateLimiterId, config)
   resetRateLimiter(rateLimiterId)

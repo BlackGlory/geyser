@@ -1,10 +1,10 @@
 import { getDatabase } from '../database.js'
 import { withLazyStatic, lazyStatic } from 'extra-lazy'
-import { IRateLimiterConfiguration } from '@src/contract.js'
+import { IRateLimiterConfig } from '@src/contract.js'
 
 export const getRateLimiterConfiguration = withLazyStatic((
   id: string
-): IRateLimiterConfiguration | null => {
+): IRateLimiterConfig | null => {
   const row = lazyStatic(() => getDatabase().prepare(`
     SELECT duration
          , total_tokens

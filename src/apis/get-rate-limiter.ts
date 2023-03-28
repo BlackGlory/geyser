@@ -1,8 +1,8 @@
-import { IRateLimiterConfiguration } from '@src/contract.js'
+import { IRateLimiterConfig } from '@src/contract.js'
 import { getRateLimiterConfiguration } from '@dao/get-rate-limiter-configuration.js'
 
 export function getRateLimiter(
   rateLimiterId: string
-): IRateLimiterConfiguration | null {
+): IRateLimiterConfig | null {
   return getRateLimiterConfiguration(rateLimiterId)
 }

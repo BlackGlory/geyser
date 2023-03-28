@@ -6,7 +6,7 @@ import { AbortController } from 'extra-abort'
 import { setRateLimiter } from '@apis/set-rate-limiter.js'
 import { acquireToken } from '@apis/acquire-token.js'
 import { getRawRateLimiter } from '@test/dao.js'
-import { IRateLimiterConfiguration } from '@src/contract.js'
+import { IRateLimiterConfig } from '@src/contract.js'
 
 beforeEach(startService)
 afterEach(stopService)
@@ -18,7 +18,7 @@ describe('setRateLimiter', () => {
     const res = await fetch(put(
       url(getAddress())
     , pathname(`/rate-limiters/${id}`)
-    , json<IRateLimiterConfiguration>({
+    , json<IRateLimiterConfig>({
         duration: null
       , limit: null
       })
@@ -46,7 +46,7 @@ describe('setRateLimiter', () => {
     const res = await fetch(put(
       url(getAddress())
     , pathname(`/rate-limiters/${id}`)
-    , json<IRateLimiterConfiguration>({
+    , json<IRateLimiterConfig>({
         duration: 50
       , limit: 100
       })
