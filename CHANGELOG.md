@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/BlackGlory/geyser/compare/v0.4.0...v0.5.0) (2023-04-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replaced HTTP with WebSocket
+
+* replace HTTP with WebSocket ([f270054](https://github.com/BlackGlory/geyser/commit/f270054e289cbedd42c2d4c1bd58fb3c94ffd027))
+
 ## [0.4.0](https://github.com/BlackGlory/geyser/compare/v0.3.2...v0.4.0) (2023-03-10)
 
 
