@@ -10,20 +10,20 @@ export interface IAPI {
   getAllRateLimiterIds(): string[]
 
   getRateLimiter(rateLimiterId: string): IRateLimiterConfig | null
-  setRateLimiter(rateLimiterId: string, config: IRateLimiterConfig): void
-  removeRateLimiter(rateLimiterId: string): void
+  setRateLimiter(rateLimiterId: string, config: IRateLimiterConfig): null
+  removeRateLimiter(rateLimiterId: string): null
 
   /**
    * 重置速率限制器的状态.
    * 
    * @throws {RateLimiterNotFound}
    */
-  resetRateLimiter(rateLimiterId: string): void
+  resetRateLimiter(rateLimiterId: string): null
 
   /**
    * @throws {RateLimiterNotFound}
    */
-  acquireToken(rateLimiterId: string, signal: AbortSignal): Promise<void>
+  acquireToken(rateLimiterId: string): null
 }
 
 /**

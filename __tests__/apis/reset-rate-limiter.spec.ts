@@ -1,28 +1,26 @@
-import { startService, stopService, getAddress } from '@test/utils.js'
-import { fetch } from 'extra-fetch'
-import { post } from 'extra-request'
-import { url, pathname } from 'extra-request/transformers'
+import { startService, stopService, buildClient } from '@test/utils.js'
 import { setRateLimiter } from '@apis/set-rate-limiter.js'
 import { acquireToken } from '@apis/acquire-token.js'
 import { AbortController } from 'extra-abort'
 import { getRawRateLimiter } from '@test/dao.js'
+import { getErrorPromise } from 'return-style'
+import { RateLimiterNotFound } from '@src/contract.js'
 
 beforeEach(startService)
 afterEach(stopService)
 
 describe('resetRateLimiter', () => {
   test('rate limiter does not exist', async () => {
+    const client = await buildClient()
     const id = 'id'
 
-    const res = await fetch(post(
-      url(getAddress())
-    , pathname(`/rate-limiters/${id}/reset`)
-    ))
+    const err = await getErrorPromise(client.resetRateLimiter(id))
 
-    expect(res.status).toBe(404)
+    expect(err).toBeInstanceOf(RateLimiterNotFound)
   })
 
   test('rate limiter exists', async () => {
+    const client = await buildClient()
     const id = 'id'
     setRateLimiter(id, {
       duration: null
@@ -31,12 +29,8 @@ describe('resetRateLimiter', () => {
     const controller = new AbortController()
     await acquireToken(id, controller.signal)
 
-    const res = await fetch(post(
-      url(getAddress())
-    , pathname(`/rate-limiters/${id}/reset`)
-    ))
+    await client.resetRateLimiter(id)
 
-    expect(res.status).toBe(204)
     expect(getRawRateLimiter(id)).toStrictEqual({
       id
     , duration: null

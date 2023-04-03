@@ -1,7 +1,4 @@
-import { startService, stopService, getAddress } from '@test/utils.js'
-import { fetch } from 'extra-fetch'
-import { post } from 'extra-request'
-import { url, pathname, signal } from 'extra-request/transformers'
+import { startService, stopService, buildClient } from '@test/utils.js'
 import { delay, StatefulPromise, StatefulPromiseState } from 'extra-promise'
 import { setRateLimiter } from '@apis/set-rate-limiter.js'
 import { removeRateLimiter } from '@apis/remove-rate-limiter.js'
@@ -10,8 +7,9 @@ import { acquireToken } from '@apis/acquire-token.js'
 import { resetRateLimiter } from '@apis/reset-rate-limiter.js'
 import { AbortController, AbortError } from 'extra-abort'
 import { jest } from '@jest/globals'
-import { getErrorAsync } from 'return-style'
+import { getErrorPromise } from 'return-style'
 import { pass } from '@blackglory/prelude'
+import { RateLimiterNotFound } from '@src/contract.js'
 
 const TIME_ERROR = 1
 
@@ -20,32 +18,27 @@ afterEach(stopService)
 
 describe('acquireToken', () => {
   test('rate limiter does not exist', async () => {
+    const client = await buildClient()
     const id = 'id'
 
-    const res = await fetch(post(
-      url(getAddress())
-    , pathname(`/rate-limiters/${id}/acquire`)
-    ))
+    const err = await getErrorPromise(client.acquireToken(id))
 
-    expect(res.status).toBe(404)
+    expect(err).toBeInstanceOf(RateLimiterNotFound)
   })
 
   describe('rate limiter exists', () => {
     test('acquired', async () => {
       jest.useFakeTimers({ now: 100 })
       try {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: null
         , limit: null
         })
 
-        const res = await fetch(post(
-          url(getAddress())
-        , pathname(`/rate-limiters/${id}/acquire`)
-        ))
+        await client.acquireToken(id)
 
-        expect(res.status).toBe(204)
         expect(getRawRateLimiter(id)).toStrictEqual({
           id
         , duration: null
@@ -60,6 +53,7 @@ describe('acquireToken', () => {
 
     describe('acquiring', () => {
       test('cancel request', async () => {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: null
@@ -67,11 +61,7 @@ describe('acquireToken', () => {
         })
 
         const controller = new AbortController()
-        const promise = fetch(post(
-          url(getAddress())
-        , pathname(`/rate-limiters/${id}/acquire`)
-        , signal(controller.signal)
-        ))
+        const promise = client.acquireToken(id, controller.signal)
         promise.catch(pass)
         await delay(1000)
         controller.abort()
@@ -80,7 +70,7 @@ describe('acquireToken', () => {
           duration: null
         , limit: null
         })
-        const res = await getErrorAsync(() => promise)
+        const res = await getErrorPromise(promise)
 
         expect(res).toBeInstanceOf(AbortError)
         expect(getRawRateLimiter(id)).toStrictEqual({
@@ -93,6 +83,7 @@ describe('acquireToken', () => {
       })
 
       test('enter the next cycle', async () => {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: 1000
@@ -102,13 +93,9 @@ describe('acquireToken', () => {
         const oldCycleStartedAt = getRawRateLimiter(id)!.last_cycle_started_at!
 
         const startTime = Date.now()
-        const res = await fetch(post(
-          url(getAddress())
-        , pathname(`/rate-limiters/${id}/acquire`)
-        ))
+        await client.acquireToken(id)
         const endTime = Date.now()
 
-        expect(res.status).toBe(204)
         expect(endTime - startTime).toBeGreaterThanOrEqual(1000 - TIME_ERROR)
         expect(endTime - startTime).toBeLessThan(1500)
         const rawRateLimiter = getRawRateLimiter(id)!
@@ -127,17 +114,15 @@ describe('acquireToken', () => {
       })
 
       test('set rate limiter', async () => {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: null
         , limit: 0
         })
 
-        const promise = new StatefulPromise<Response>((resolve, reject) => {
-          fetch(post(
-            url(getAddress())
-          , pathname(`/rate-limiters/${id}/acquire`)
-          ))
+        const promise = new StatefulPromise<null>((resolve, reject) => {
+          client.acquireToken(id)
             .then(resolve, reject)
         })
         await delay(1000)
@@ -148,10 +133,9 @@ describe('acquireToken', () => {
             duration: null
           , limit: 1
           })
-          const res = await promise
+          await promise
 
           expect(state).toBe(StatefulPromiseState.Pending)
-          expect(res.status).toBe(204)
           expect(getRawRateLimiter(id)).toStrictEqual({
             id
           , duration: null
@@ -165,6 +149,7 @@ describe('acquireToken', () => {
       })
 
       test('reset rate limiter', async () => {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: null
@@ -173,11 +158,8 @@ describe('acquireToken', () => {
         const controller = new AbortController()
         await acquireToken(id, controller.signal)
 
-        const promise = new StatefulPromise<Response>((resolve, reject) => {
-          fetch(post(
-            url(getAddress())
-          , pathname(`/rate-limiters/${id}/acquire`)
-          ))
+        const promise = new StatefulPromise<null>((resolve, reject) => {
+          client.acquireToken(id)
             .then(resolve, reject)
         })
         await delay(1000)
@@ -185,10 +167,9 @@ describe('acquireToken', () => {
         jest.useFakeTimers({ now: 1000 })
         try {
           resetRateLimiter(id)
-          const res = await promise
+          await promise
 
           expect(state).toBe(StatefulPromiseState.Pending)
-          expect(res.status).toBe(204)
           expect(getRawRateLimiter(id)).toStrictEqual({
             id
           , duration: null
@@ -202,21 +183,19 @@ describe('acquireToken', () => {
       })
 
       test('remove rate limiter', async () => {
+        const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
           duration: null
         , limit: 0
         })
 
-        const promise = fetch(post(
-          url(getAddress())
-        , pathname(`/rate-limiters/${id}/acquire`)
-        ))
+        const promise = client.acquireToken(id)
         await delay(1000)
         removeRateLimiter(id)
-        const res = await promise
+        const err = await getErrorPromise(promise)
 
-        expect(res.status).toBe(404)
+        expect(err).toBeInstanceOf(RateLimiterNotFound)
         expect(hasRawRateLimiter(id)).toBe(false)
       })
     })

@@ -5,9 +5,10 @@ import { eventHub, Event } from '@src/event-hub.js'
 /**
  * @throws {RateLimiterNotFound}
  */
-export function resetRateLimiter(rateLimiterId: string): void {
+export function resetRateLimiter(rateLimiterId: string): null {
   if (_resetRateLimiter(rateLimiterId)) {
     eventHub.emit(rateLimiterId, Event.Reset)
+    return null
   } else {
     throw new RateLimiterNotFound()
   }

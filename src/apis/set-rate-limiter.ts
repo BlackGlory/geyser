@@ -6,8 +6,9 @@ import { eventHub, Event } from '@src/event-hub.js'
 export function setRateLimiter(
   rateLimiterId: string
 , config: IRateLimiterConfig
-): void {
+): null {
   setRateLimiterConfiguration(rateLimiterId, config)
   resetRateLimiter(rateLimiterId)
   eventHub.emit(rateLimiterId, Event.Set)
+  return null
 }
