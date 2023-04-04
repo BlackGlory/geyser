@@ -14,7 +14,6 @@
     , "@utils/*": ["src/utils/*"]
     , "@env/*": ["src/env/*"]
     , "@test/*": ["__tests__/*"]
-    , "@services/*": ["src/services/*"]
     }
   , "plugins" : [
       {
