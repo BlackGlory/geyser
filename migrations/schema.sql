@@ -6,5 +6,5 @@ CREATE TABLE geyser_rate_limiter (
 , duration              INTEGER -- 一个周期的毫秒数
 , total_tokens          INTEGER
 , used_tokens           INTEGER      NOT NULL DEFAULT 0
-, last_cycle_started_at DATETIME -- 毫秒时间戳
+, last_cycle_started_at INTEGER -- 毫秒时间戳
 );
