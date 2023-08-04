@@ -1,5 +1,5 @@
 # geyser
-提供以HTTP为通讯协议的咨询式速率限制器.
+提供以WebSocket为通讯协议的咨询式速率限制器.
 
 ## Quickstart
 ```sh
