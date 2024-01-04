@@ -14,10 +14,10 @@ describe('setRateLimiterConfiguration', () => {
 
     expect(getRawRateLimiter('id')).toStrictEqual({
       id: 'id'
-    , duration: 50
+    , window_duration: 50
     , total_tokens: 100
     , used_tokens: 0
-    , last_cycle_started_at: null
+    , window_started_at: null
     })
   })
 
@@ -34,10 +34,10 @@ describe('setRateLimiterConfiguration', () => {
 
     expect(getRawRateLimiter('id')).toStrictEqual({
       id: 'id'
-    , duration: 100
+    , window_duration: 100
     , total_tokens: 200
     , used_tokens: 0
-    , last_cycle_started_at: null
+    , window_started_at: null
     })
   })
 })

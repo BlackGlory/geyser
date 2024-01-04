@@ -16,11 +16,11 @@ export class Success {
 export class Unreachable {}
 
 /**
- * 表示可能在下个周期获取到令牌.
+ * 表示可能在下个时间窗口获取到令牌.
  */
-export class WaitForNextCycle {
+export class WaitForNextWindow {
   /**
-   * @param timeout 距离下一个周期的毫秒数.
+   * @param timeout 距离下一个时间窗口的毫秒数.
    */
   constructor(public readonly timeout: number) {}
 }
@@ -31,14 +31,14 @@ export class WaitForNextCycle {
 export const tryAcquireToken = withLazyStatic((
   id: string
 , timestamp: number
-): Success | Unreachable | WaitForNextCycle => {
+): Success | Unreachable | WaitForNextWindow => {
   return lazyStatic(() => getDatabase().transaction((
     id: string
   , timestamp: number
-  ): Success | Unreachable | WaitForNextCycle => {
-    const startNewCycleStatement = lazyStatic(() => getDatabase().prepare(`
+  ): Success | Unreachable | WaitForNextWindow => {
+    const startNewWindowStatement = lazyStatic(() => getDatabase().prepare(`
       UPDATE geyser_rate_limiter
-         SET last_cycle_started_at = $timestamp
+         SET window_started_at = $timestamp
            , used_tokens = 0
        WHERE id = $id;
     `), [getDatabase()])
@@ -50,28 +50,28 @@ export const tryAcquireToken = withLazyStatic((
     `), [getDatabase()])
 
     const row = lazyStatic(() => getDatabase().prepare(`
-      SELECT last_cycle_started_at
+      SELECT window_started_at
            , total_tokens
            , used_tokens
-           , duration
+           , window_duration
         FROM geyser_rate_limiter
        WHERE id = $id;
     `), [getDatabase()])
       .get({ id }) as {
-        last_cycle_started_at: number | null
+        window_started_at: number | null
         total_tokens: number | null
         used_tokens: number
-        duration: number | null
+        window_duration: number | null
       } | undefined
     if (!row) throw new RateLimiterNotFound()
 
-    const lastCycleStartedAt: number | null = row.last_cycle_started_at
+    const windowStartedAt: number | null = row.window_started_at
     const totalTokens: number = row.total_tokens ?? Infinity
     const usedTokens: number = row.used_tokens
-    const duration: number = row.duration ?? Infinity
+    const windowDuration: number = row.window_duration ?? Infinity
 
-    if (isNull(lastCycleStartedAt)) {
-      startNewCycleStatement.run({ id, timestamp })
+    if (isNull(windowStartedAt)) {
+      startNewWindowStatement.run({ id, timestamp })
 
       if (totalTokens > 0) {
         acquireStatement.run({ id })
@@ -81,8 +81,8 @@ export const tryAcquireToken = withLazyStatic((
         return new Unreachable()
       }
     } else {
-      if (timestamp > lastCycleStartedAt + duration) {
-        startNewCycleStatement.run({ id, timestamp })
+      if (timestamp > windowStartedAt + windowDuration) {
+        startNewWindowStatement.run({ id, timestamp })
 
         if (totalTokens > 0) {
           acquireStatement.run({ id })
@@ -97,10 +97,10 @@ export const tryAcquireToken = withLazyStatic((
           return new Success(false)
         } else {
           if (totalTokens > 0) {
-            if (isPositiveInfinity(duration)) {
+            if (isPositiveInfinity(windowDuration)) {
               return new Unreachable()
             } else {
-              return new WaitForNextCycle(lastCycleStartedAt + duration - timestamp)
+              return new WaitForNextWindow(windowStartedAt + windowDuration - timestamp)
             }
           } else {
             return new Unreachable()

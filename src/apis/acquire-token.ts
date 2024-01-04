@@ -1,4 +1,4 @@
-import { tryAcquireToken, Success, Unreachable, WaitForNextCycle } from '@dao/try-acquire-token.js'
+import { tryAcquireToken, Success, Unreachable, WaitForNextWindow } from '@dao/try-acquire-token.js'
 import { eventHub, Event } from '@src/event-hub.js'
 import { LinkedAbortController, raceAbortSignals } from 'extra-abort'
 import { waitForTimeout } from '@blackglory/wait-for'
@@ -13,7 +13,7 @@ export async function acquireToken(
   while (true) {
     const result = tryAcquireToken(rateLimiterId, Date.now())
 
-    if (result instanceof WaitForNextCycle) {
+    if (result instanceof WaitForNextWindow) {
       const controller = new LinkedAbortController(raceAbortSignals([signal]))
       try {
         const signal = controller.signal

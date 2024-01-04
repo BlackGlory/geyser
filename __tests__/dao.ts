@@ -2,27 +2,27 @@ import { getDatabase } from '@src/database.js'
 
 interface IRawRateLimiter {
   id: string
-  duration: number | null
+  window_duration: number | null
   total_tokens: number | null
   used_tokens: number
-  last_cycle_started_at: number | null
+  window_started_at: number | null
 }
 
 export function setRawRateLimiter<T extends IRawRateLimiter>(item: T): T {
   getDatabase().prepare(`
     INSERT INTO geyser_rate_limiter (
       id
-    , duration
+    , window_duration
     , total_tokens
     , used_tokens
-    , last_cycle_started_at
+    , window_started_at
     )
     VALUES (
       $id
-    , $duration
+    , $window_duration
     , $total_tokens
     , $used_tokens
-    , $last_cycle_started_at
+    , $window_started_at
     );
   `).run(item)
 

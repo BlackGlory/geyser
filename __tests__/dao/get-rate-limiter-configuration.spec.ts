@@ -15,8 +15,8 @@ describe('getRateLimiterConfiguration', () => {
   test('rate limiter exists', () => {
     setRawRateLimiter({
       id: 'id'
-    , duration: 50
-    , last_cycle_started_at: null
+    , window_duration: 50
+    , window_started_at: null
     , total_tokens: 100
     , used_tokens: 0
     })

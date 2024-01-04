@@ -7,15 +7,15 @@ export const setRateLimiterConfiguration = withLazyStatic((
 , config: IRateLimiterConfig
 ): void => {
   lazyStatic(() => getDatabase().prepare(`
-    INSERT INTO geyser_rate_limiter (id, duration, total_tokens)
-    VALUES ($id, $duration, $totalTokens)
+    INSERT INTO geyser_rate_limiter (id, window_duration, total_tokens)
+    VALUES ($id, $windowDuration, $totalTokens)
         ON CONFLICT(id)
-        DO UPDATE SET duration = $duration
+        DO UPDATE SET window_duration = $windowDuration
                     , total_tokens = $totalTokens;
   `), [getDatabase()])
     .run({
       id
-    , duration: config.duration
+    , windowDuration: config.duration
     , totalTokens: config.limit
     })
 })

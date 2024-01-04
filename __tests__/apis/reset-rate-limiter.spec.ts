@@ -33,10 +33,10 @@ describe('resetRateLimiter', () => {
 
     expect(getRawRateLimiter(id)).toStrictEqual({
       id
-    , duration: null
+    , window_duration: null
     , total_tokens: null
     , used_tokens: 0
-    , last_cycle_started_at: null
+    , window_started_at: null
     })
   })
 })

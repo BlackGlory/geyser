@@ -41,10 +41,10 @@ describe('acquireToken', () => {
 
         expect(getRawRateLimiter(id)).toStrictEqual({
           id
-        , duration: null
+        , window_duration: null
         , total_tokens: null
         , used_tokens: 1
-        , last_cycle_started_at: 100
+        , window_started_at: 100
         })
       } finally {
         jest.useRealTimers()
@@ -75,14 +75,14 @@ describe('acquireToken', () => {
         expect(res).toBeInstanceOf(AbortError)
         expect(getRawRateLimiter(id)).toStrictEqual({
           id
-        , duration: null
+        , window_duration: null
         , total_tokens: null
         , used_tokens: 0
-        , last_cycle_started_at: null
+        , window_started_at: null
         })
       })
 
-      test('enter the next cycle', async () => {
+      test('enter the next window', async () => {
         const client = await buildClient()
         const id = 'id'
         setRateLimiter(id, {
@@ -90,7 +90,7 @@ describe('acquireToken', () => {
         , limit: 1
         })
         await acquireToken(id, new AbortController().signal)
-        const oldCycleStartedAt = getRawRateLimiter(id)!.last_cycle_started_at!
+        const oldWindowStartedAt = getRawRateLimiter(id)!.window_started_at!
 
         const startTime = Date.now()
         await client.acquireToken(id)
@@ -101,16 +101,16 @@ describe('acquireToken', () => {
         const rawRateLimiter = getRawRateLimiter(id)!
         expect(rawRateLimiter).toStrictEqual({
           id
-        , duration: 1000
+        , window_duration: 1000
         , total_tokens: 1
         , used_tokens: 1
           // eslint-disable-next-line
-        , last_cycle_started_at: expect.any(Number)
+        , window_started_at: expect.any(Number)
         })
-        const newCycleStartedAt = rawRateLimiter.last_cycle_started_at!
-        expect(newCycleStartedAt).toBeGreaterThan(oldCycleStartedAt)
-        expect(newCycleStartedAt - oldCycleStartedAt).toBeGreaterThanOrEqual(1000 - TIME_ERROR)
-        expect(newCycleStartedAt - oldCycleStartedAt).toBeLessThan(1500)
+        const newWindowStartedAt = rawRateLimiter.window_started_at!
+        expect(newWindowStartedAt).toBeGreaterThan(oldWindowStartedAt)
+        expect(newWindowStartedAt - oldWindowStartedAt).toBeGreaterThanOrEqual(1000 - TIME_ERROR)
+        expect(newWindowStartedAt - oldWindowStartedAt).toBeLessThan(1500)
       })
 
       test('set rate limiter', async () => {
@@ -138,10 +138,10 @@ describe('acquireToken', () => {
           expect(state).toBe(StatefulPromiseState.Pending)
           expect(getRawRateLimiter(id)).toStrictEqual({
             id
-          , duration: null
+          , window_duration: null
           , total_tokens: 1
           , used_tokens: 1
-          , last_cycle_started_at: 1000
+          , window_started_at: 1000
           })
         } finally {
           jest.useRealTimers()
@@ -172,10 +172,10 @@ describe('acquireToken', () => {
           expect(state).toBe(StatefulPromiseState.Pending)
           expect(getRawRateLimiter(id)).toStrictEqual({
             id
-          , duration: null
+          , window_duration: null
           , total_tokens: 1
           , used_tokens: 1
-          , last_cycle_started_at: 1000
+          , window_started_at: 1000
           })
         } finally {
           jest.useRealTimers()

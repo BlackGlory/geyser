@@ -6,20 +6,20 @@ export const getRateLimiterConfiguration = withLazyStatic((
   id: string
 ): IRateLimiterConfig | null => {
   const row = lazyStatic(() => getDatabase().prepare(`
-    SELECT duration
+    SELECT window_duration
          , total_tokens
       FROM geyser_rate_limiter
      WHERE id = $id;
   `), [getDatabase()])
     .get({ id }) as {
-      duration: number | null
+      window_duration: number | null
       total_tokens: number | null
     } | undefined
 
   if (!row) return null
 
   return {
-    duration: row.duration
+    duration: row.window_duration
   , limit: row.total_tokens
   }
 })

@@ -15,8 +15,8 @@ describe('resetRateLimiter', () => {
   test('rate limiter exists', () => {
     setRawRateLimiter({
       id: 'id'
-    , duration: null
-    , last_cycle_started_at: 50
+    , window_duration: null
+    , window_started_at: 50
     , total_tokens: null
     , used_tokens: 100
     })
@@ -26,8 +26,8 @@ describe('resetRateLimiter', () => {
     expect(result).toBe(true)
     expect(getRawRateLimiter('id')).toStrictEqual({
       id: 'id'
-    , duration: null
-    , last_cycle_started_at: null
+    , window_duration: null
+    , window_started_at: null
     , total_tokens: null
     , used_tokens: 0
     })

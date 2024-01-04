@@ -15,10 +15,10 @@ describe('getAllRateLimiterIds', () => {
   test('non-empty', () => {
     setRawRateLimiter({
       id: 'id'
-    , duration: null
+    , window_duration: null
     , total_tokens: null
     , used_tokens: 0
-    , last_cycle_started_at: null
+    , window_started_at: null
     })
 
     const result = getAllRateLimiterIds()
