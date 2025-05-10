@@ -7,18 +7,18 @@ export enum Event {
 , RateLimiterRemoved
 }
 
-type RateLimiterEventToArgs = {
+type EventToArgs = {
   [Event.RateLimiterSet]: []
   [Event.RateLimiterReset]: []
   [Event.RateLimiterRemoved]: []
 }
 
 class EventHub {
-  private rateLimiterIdToEmitter: Map<string, Emitter<RateLimiterEventToArgs>> = new Map()
+  private rateLimiterIdToEmitter: Map<string, Emitter<EventToArgs>> = new Map()
 
   async waitFor(
     rateLimiterId: string
-  , event: keyof RateLimiterEventToArgs
+  , event: keyof EventToArgs
   , abortSignal?: AbortSignal
   ): Promise<void> {
     if (!this.rateLimiterIdToEmitter.has(rateLimiterId)) {
@@ -32,7 +32,7 @@ class EventHub {
   on<T extends Event>(
     rateLimiterId: string
   , event: T
-  , listener: (...args: RateLimiterEventToArgs[T]) => void
+  , listener: (...args: EventToArgs[T]) => void
   ): () => void {
     if (!this.rateLimiterIdToEmitter.has(rateLimiterId)) {
       this.rateLimiterIdToEmitter.set(rateLimiterId, new Emitter())
@@ -45,7 +45,7 @@ class EventHub {
   once<T extends Event>(
     rateLimiterId: string
   , event: T
-  , listener: (...args: RateLimiterEventToArgs[T]) => void
+  , listener: (...args: EventToArgs[T]) => void
   ): () => void {
     if (!this.rateLimiterIdToEmitter.has(rateLimiterId)) {
       this.rateLimiterIdToEmitter.set(rateLimiterId, new Emitter())
@@ -58,7 +58,7 @@ class EventHub {
   emit<T extends Event>(
     rateLimiterId: string
   , event: T
-  , ...args: RateLimiterEventToArgs[T]
+  , ...args: EventToArgs[T]
   ): void {
     this.rateLimiterIdToEmitter.get(rateLimiterId)?.emit(event, ...args)
   }
