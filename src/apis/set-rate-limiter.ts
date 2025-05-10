@@ -9,6 +9,6 @@ export function setRateLimiter(
 ): null {
   setRateLimiterConfiguration(rateLimiterId, config)
   resetRateLimiter(rateLimiterId)
-  eventHub.emit(rateLimiterId, Event.Set)
+  eventHub.emit(rateLimiterId, Event.RateLimiterSet)
   return null
 }

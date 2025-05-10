@@ -18,9 +18,9 @@ export async function acquireToken(
       try {
         const signal = controller.signal
         await Promise.race([
-          eventHub.waitFor(rateLimiterId, Event.Set, signal)
-        , eventHub.waitFor(rateLimiterId, Event.Reset, signal)
-        , eventHub.waitFor(rateLimiterId, Event.Removed, signal)
+          eventHub.waitFor(rateLimiterId, Event.RateLimiterSet, signal)
+        , eventHub.waitFor(rateLimiterId, Event.RateLimiterReset, signal)
+        , eventHub.waitFor(rateLimiterId, Event.RateLimiterRemoved, signal)
         , waitForTimeout(result.timeout, signal)
         ])
       } finally {
@@ -33,9 +33,9 @@ export async function acquireToken(
       try {
         const signal = controller.signal
         await Promise.race([
-          eventHub.waitFor(rateLimiterId, Event.Set, signal)
-        , eventHub.waitFor(rateLimiterId, Event.Reset, signal)
-        , eventHub.waitFor(rateLimiterId, Event.Removed, signal)
+          eventHub.waitFor(rateLimiterId, Event.RateLimiterSet, signal)
+        , eventHub.waitFor(rateLimiterId, Event.RateLimiterReset, signal)
+        , eventHub.waitFor(rateLimiterId, Event.RateLimiterRemoved, signal)
         ])
       } finally {
         controller.abort()

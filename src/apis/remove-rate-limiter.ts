@@ -3,6 +3,6 @@ import { eventHub, Event } from '@src/event-hub.js'
 
 export function removeRateLimiter(rateLimiterId: string): null {
   _removeRateLimiter(rateLimiterId)
-  eventHub.emit(rateLimiterId, Event.Removed)
+  eventHub.emit(rateLimiterId, Event.RateLimiterRemoved)
   return null
 }
