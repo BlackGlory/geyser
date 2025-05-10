@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/BlackGlory/geyser/compare/v0.5.0...v0.5.1) (2025-05-10)
+
+
+### Bug Fixes
+
+* use a transaction for `setRateLimiter` ([78ff6bf](https://github.com/BlackGlory/geyser/commit/78ff6bf328c22a7623ce56e56378e1708cc25c25))
+
 ## [0.5.0](https://github.com/BlackGlory/geyser/compare/v0.4.0...v0.5.0) (2023-04-03)
 
 
