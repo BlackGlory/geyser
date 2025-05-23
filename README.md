@@ -49,7 +49,7 @@ volumes:
 ## API
 ```ts
 interface IRateLimiterConfig extends JSONObject {
-  duration: number | null
+  duration: number | null /* 毫秒 */
   limit: number | null
 }
 

@@ -2,7 +2,7 @@ import { JSONObject } from 'justypes'
 import { CustomError } from '@blackglory/errors'
 
 export interface IRateLimiterConfig extends JSONObject {
-  duration: number | null
+  duration: number | null /* 毫秒 */
   limit: number | null
 }
 
