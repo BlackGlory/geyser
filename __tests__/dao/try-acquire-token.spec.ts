@@ -81,7 +81,7 @@ describe('tryAcquireToken', () => {
       , used_tokens: 0
       })
 
-      const result = tryAcquireToken('id', 250)
+      const result = tryAcquireToken('id', 249)
 
       expect(result).toStrictEqual(new Success(false))
       expect(getRawRateLimiter('id')).toStrictEqual({
@@ -102,9 +102,9 @@ describe('tryAcquireToken', () => {
       , used_tokens: 100
       })
 
-      const result = tryAcquireToken('id', 250)
+      const result = tryAcquireToken('id', 249)
 
-      expect(result).toStrictEqual(new WaitForNextWindow(0))
+      expect(result).toStrictEqual(new WaitForNextWindow(1))
       expect(getRawRateLimiter('id')).toStrictEqual({
         id: 'id'
       , window_duration: 50
@@ -123,7 +123,7 @@ describe('tryAcquireToken', () => {
       , used_tokens: 0
       })
 
-      const result = tryAcquireToken('id', 250)
+      const result = tryAcquireToken('id', 249)
 
       expect(result).toStrictEqual(new Unreachable())
       expect(getRawRateLimiter('id')).toStrictEqual({
@@ -146,13 +146,13 @@ describe('tryAcquireToken', () => {
       , used_tokens: 0
       })
 
-      const result = tryAcquireToken('id', 251)
+      const result = tryAcquireToken('id', 250)
 
       expect(result).toStrictEqual(new Success(false))
       expect(getRawRateLimiter('id')).toStrictEqual({
         id: 'id'
       , window_duration: 50
-      , window_started_at: 251
+      , window_started_at: 250
       , total_tokens: 100
       , used_tokens: 1
       })
@@ -162,18 +162,18 @@ describe('tryAcquireToken', () => {
       setRawRateLimiter({
         id: 'id'
       , window_duration: 50
-      , window_started_at: 100
+      , window_started_at: 200
       , total_tokens: 0
       , used_tokens: 0
       })
 
-      const result = tryAcquireToken('id', 151)
+      const result = tryAcquireToken('id', 250)
 
       expect(result).toStrictEqual(new Unreachable())
       expect(getRawRateLimiter('id')).toStrictEqual({
         id: 'id'
       , window_duration: 50
-      , window_started_at: 151
+      , window_started_at: 250
       , total_tokens: 0
       , used_tokens: 0
       })

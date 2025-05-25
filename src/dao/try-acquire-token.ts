@@ -81,7 +81,7 @@ export const tryAcquireToken = withLazyStatic((
         return new Unreachable()
       }
     } else {
-      if (timestamp > windowStartedAt + windowDuration) {
+      if (windowStartedAt + windowDuration <= timestamp) {
         startNewWindowStatement.run({ id, timestamp })
 
         if (totalTokens > 0) {
@@ -100,7 +100,9 @@ export const tryAcquireToken = withLazyStatic((
             if (isPositiveInfinity(windowDuration)) {
               return new Unreachable()
             } else {
-              return new WaitForNextWindow(windowStartedAt + windowDuration - timestamp)
+              return new WaitForNextWindow(
+                windowStartedAt + windowDuration - timestamp
+              )
             }
           } else {
             return new Unreachable()
